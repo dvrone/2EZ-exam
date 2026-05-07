@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-5">
+            <div class="card p-4">
+                <h3 class="mb-4 text-center fw-bold">
+                    <i class="bi bi-box-arrow-in-right"></i> Kirish
+                </h3>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Parol</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-box-arrow-in-right"></i> Kirish
+                    </button>
+                </form>
+                <p class="mt-3 text-center">
+                    Hisobingiz yo'qmi?
+                    <a href="{{ url_for("auth.register") }}">Ro'yxatdan o'tish</a>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

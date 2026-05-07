@@ -1,0 +1,11 @@
+? Pythonda ro'yxat yaratish uchun qaysi belgi ishlatiladi?
+{}
+#[]
+()
+<>
+
+? Qaysi kalit so'z funksiya yaratadi?
+func
+define
+#def
+function

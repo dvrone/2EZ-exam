@@ -1,0 +1,167 @@
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+/* ========================
+   Global
+======================== */
+body {
+  background: #f0f4f8;
+  --bs-body-font-family: "Work Sans", sans-serif;
+}
+
+[data-bs-theme="dark"] body {
+  background: #121212;
+}
+
+/* ========================
+   Navbar
+======================== */
+.navbar {
+  background: #4a90d9 !important;
+}
+
+.navbar-brand {
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: white !important;
+}
+
+/* ========================
+   Buttons
+======================== */
+.btn-primary {
+  background: #4a90d9;
+  border-color: #4a90d9;
+}
+
+.btn-primary:hover {
+  background: #357abd;
+  border-color: #357abd;
+}
+
+/* ========================
+   Cards
+======================== */
+.card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+[data-bs-theme="dark"] .card {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================
+   Alerts
+======================== */
+.alert {
+  border-radius: 12px;
+  border: none;
+}
+
+/* ========================
+   Take exam options
+======================== */
+.option-btn {
+  border: 2.5px solid #d1d9e0;
+  border-radius: 14px;
+  background: white;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: 600;
+  width: 100%;
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: #4a90d9;
+  background: #f0f7ff;
+  cursor: pointer;
+}
+
+.option-btn.correct {
+  border-color: #58cc02 !important;
+  background: #f0fff0 !important;
+  color: #58cc02 !important;
+}
+
+.option-btn.wrong {
+  border-color: #ff4b4b !important;
+  background: #fff0f0 !important;
+  color: #ff4b4b !important;
+  animation: shake 0.4s ease;
+}
+
+[data-bs-theme="dark"] .option-btn {
+  background: #2b3035;
+  border-color: #495057;
+  color: #dee2e6;
+}
+
+[data-bs-theme="dark"] .option-btn:hover:not(:disabled) {
+  border-color: #4a90d9;
+  background: #1a2535;
+}
+
+[data-bs-theme="dark"] .option-btn.correct {
+  background: #1a2e1a !important;
+}
+
+[data-bs-theme="dark"] .option-btn.wrong {
+  background: #2e1a1a !important;
+}
+
+/* ========================
+   Progress bar
+======================== */
+.progress-bar-custom {
+  background: #4a90d9;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+/* ========================
+   Timer warning
+======================== */
+.timer-warning {
+  background: #ff4b4b !important;
+  color: white !important;
+}
+
+/* ========================
+   Animations
+======================== */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(8px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease forwards;
+}

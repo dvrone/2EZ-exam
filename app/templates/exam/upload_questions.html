@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h4 class="mb-4 fw-bold">
+                <i class="bi bi-upload"></i> .txt dan yuklash
+            </h4>
+            <div class="card p-4 mb-4 bg-light border-0">
+                <p class="fw-semibold mb-2">
+                    <i class="bi bi-info-circle"></i> Fayl formati:
+                </p>
+                <pre style="font-size: 0.85rem; background: white; padding: 12px; border-radius: 10px; border: 1px solid #dee2e6;">? Savol matni
+variant A
+variant B
+#to'g'ri variant
+variant D
+
+? Keyingi savol
+...</pre>
+            </div>
+            <div class="card p-4">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-file-earmark-text"></i> .txt fayl tanlang
+                        </label>
+                        <input type="file" name="file" accept=".txt" class="form-control" required>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                            <i class="bi bi-upload"></i> Yuklash
+                        </button>
+                        <a href="{{ url_for('exam.exam_detail', exam_id=exam.id) }}"
+                           class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-x-lg"></i> Bekor qilish
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
