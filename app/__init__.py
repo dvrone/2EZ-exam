@@ -1,9 +1,10 @@
-from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
-from flask_bcrypt import Bcrypt
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
+from flask import Flask, render_template
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
+from flask_sqlalchemy import SQLAlchemy
 
 load_dotenv()
 

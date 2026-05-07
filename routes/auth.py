@@ -86,7 +86,8 @@ def logout():
     logout_user()
     return redirect(url_for("auth.login"))
 
-@auth.route('/leaderboard')
+
+@auth.route("/leaderboard")
 @login_required
 def leaderboard():
     if current_user.is_admin:
@@ -94,4 +95,4 @@ def leaderboard():
     else:
         users = User.query.order_by(User.xp.desc()).limit(20).all()
 
-    return render_template('auth/leaderboard.html', users=users)
+    return render_template("auth/leaderboard.html", users=users)

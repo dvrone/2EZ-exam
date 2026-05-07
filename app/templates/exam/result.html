@@ -1,78 +1,75 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6 text-center">
-
-    <script id="percentageData" type="application/json">{{ percentage }}</script>
-
-    <div class="card p-5 mb-4">
-      <div style="position: relative; width: 160px; height: 160px; margin: 0 auto 20px;">
-        <svg viewBox="0 0 160 160" style="transform: rotate(-90deg);">
-          <circle cx="80" cy="80" r="70"
-                  fill="none" stroke="#f0f4f8" stroke-width="12"/>
-          <circle cx="80" cy="80" r="70"
-                  fill="none"
-                  stroke="{% if percentage >= 70 %}#58cc02{% elif percentage >= 50 %}#ffc800{% else %}#ff4b4b{% endif %}"
-                  stroke-width="12"
-                  stroke-linecap="round"
-                  stroke-dasharray="{{ (percentage / 100 * 439.8) | round }} 439.8"
-                  style="transition: stroke-dasharray 1.5s ease;"/>
-        </svg>
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-          <div class="fw-bold" id="percentText"
-               style="font-size: 2.2rem;
-               color: {% if percentage >= 70 %}#58cc02{% elif percentage >= 50 %}#ffc800{% else %}#ff4b4b{% endif %};">
-            0%
-          </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <script id="percentageData" type="application/json">{{ percentage }}</script>
+            <div class="card p-5 mb-4">
+                <div style="position: relative;
+                            width: 160px;
+                            height: 160px;
+                            margin: 0 auto 20px">
+                    <svg viewBox="0 0 160 160" style="transform: rotate(-90deg);">
+                        <circle cx="80" cy="80" r="70" fill="none" stroke="#f0f4f8" stroke-width="12" />
+                        <circle cx="80" cy="80" r="70" fill="none" stroke="
+                        {% if percentage >= 70 %}
+                            #58cc02
+                        {% elif percentage >= 50 %}
+                            #ffc800
+                        {% else %}
+                            #ff4b4b
+                        {% endif %}
+                        " stroke-width="12" stroke-linecap="round" stroke-dasharray="{{ (percentage / 100 * 439.8) | round }} 439.8" style="transition: stroke-dasharray 1.5s ease;" />
+                    </svg>
+                    <div style="position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%)">
+                        <div class="fw-bold"
+                             id="percentText"
+                             style="font-size: 2.2rem;
+                                    color: {% if percentage >= 70 %}#58cc02{% elif percentage >= 50 %}#ffc800{% else %}#ff4b4b{% endif %}">
+                            0%
+                        </div>
+                    </div>
+                </div>
+                <h4 class="fw-bold">{{ result.exam.title }}</h4>
+                <p class="text-muted">
+                    <i class="bi bi-check-circle"></i> {{ result.score }} /
+                    {{ result.total }} to'g'ri javob
+                </p>
+                <!-- XP -->
+                <div class="alert alert-primary mt-2 fw-bold">
+                    <i class="bi bi-stars"></i> + {{ xp_earned }} XP qo'shildi!
+                    &nbsp;|&nbsp;
+                    <i class="bi bi-lightning-charge-fill"></i> Jami: {{ current_user.xp }} XP
+                </div>
+                {% if percentage >= 70 %}
+                    <div class="alert alert-success mt-2">
+                        <i class="bi bi-trophy-fill"></i> Tabriklaymiz! Imtihondan o'tdingiz!
+                    </div>
+                {% elif percentage >= 50 %}
+                    <div class="alert alert-warning mt-2">
+                        <i class="bi bi-emoji-neutral-fill"></i> Yaxshi urinish, lekin yaxshilanish kerak.
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger mt-2">
+                        <i class="bi bi-emoji-frown-fill"></i> Afsuski, imtihondan o'ta olmadingiz.
+                    </div>
+                {% endif %}
+            </div>
+            <div class="d-flex gap-3">
+                <a href="{{ url_for('exam.start_exam', exam_id=result.exam.id) }}"
+                   class="btn btn-outline-primary w-100 py-3 fw-bold"
+                   style="border-radius: 14px">
+                    <i class="bi bi-arrow-repeat"></i> Qayta urinish
+                </a>
+                <a href="{{ url_for("auth.dashboard") }}"
+                   class="btn btn-primary w-100 py-3 fw-bold"
+                   style="border-radius: 14px">
+                    <i class="bi bi-house-door-fill"></i> Bosh sahifa
+                </a>
+            </div>
         </div>
-      </div>
-
-      <h4 class="fw-bold">{{ result.exam.title }}</h4>
-      <p class="text-muted">
-        <i class="bi bi-check-circle"></i> {{ result.score }} /
-        {{ result.total }} to'g'ri javob
-      </p>
-
-      <!-- XP -->
-      <div class="alert alert-primary mt-2 fw-bold">
-        <i class="bi bi-stars"></i> + {{ xp_earned }} XP qo'shildi!
-        &nbsp;|&nbsp;
-        <i class="bi bi-lightning-charge-fill"></i> Jami: {{ current_user.xp }} XP
-      </div>
-
-      {% if percentage >= 70 %}
-        <div class="alert alert-success mt-2">
-          <i class="bi bi-trophy-fill"></i> Tabriklaymiz! Imtihondan o'tdingiz!
-        </div>
-      {% elif percentage >= 50 %}
-        <div class="alert alert-warning mt-2">
-          <i class="bi bi-emoji-neutral-fill"></i> Yaxshi urinish, lekin yaxshilanish kerak.
-        </div>
-      {% else %}
-        <div class="alert alert-danger mt-2">
-          <i class="bi bi-emoji-frown-fill"></i> Afsuski, imtihondan o'ta olmadingiz.
-        </div>
-      {% endif %}
     </div>
-
-    <div class="d-flex gap-3">
-      <a href="{{ url_for('exam.start_exam', exam_id=result.exam.id) }}"
-         class="btn btn-outline-primary w-100 py-3 fw-bold"
-         style="border-radius: 14px;">
-        <i class="bi bi-arrow-repeat"></i> Qayta urinish
-      </a>
-      <a href="{{ url_for('auth.dashboard') }}"
-         class="btn btn-primary w-100 py-3 fw-bold"
-         style="border-radius: 14px;">
-        <i class="bi bi-house-door-fill"></i> Bosh sahifa
-      </a>
-    </div>
-
-  </div>
-</div>
 {% endblock %}
-
-{% block scripts %}
-  <script src="{{ url_for('static', filename='js/result.js') }}"></script>
-{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/result.js') }}"></script>{% endblock %}
