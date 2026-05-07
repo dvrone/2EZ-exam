@@ -14,7 +14,7 @@ A test and reference platform for students.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/username/2EZ-exam.git
+git clone git@github.com:dvrone/2EZ-exam.git
 cd 2EZ-exam
 ```
 
