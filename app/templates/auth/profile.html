@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <!-- Profil kartasi -->
+            <div class="card p-4 mb-4">
+                <div class="d-flex flex-column align-items-center text-center">
+                    <!-- Avatar -->
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold fs-1 mb-3"
+                         style="width: 80px;
+                                height: 80px">{{ current_user.username[0]|upper }}</div>
+                    <!-- Username -->
+                    <h4 class="fw-bold mb-1 text-break">{{ current_user.username }}</h4>
+                    <!-- Email -->
+                    <p class="text-muted small mb-2 text-break">{{ current_user.email }}</p>
+                    <!-- Badge + Level -->
+                    <div class="d-flex align-items-center gap-2 flex-wrap justify-content-center">
+                        <span class="badge bg-primary">{{ current_user.level_name }}</span>
+                        <span class="text-muted small">Daraja {{ current_user.level }}</span>
+                    </div>
+                </div>
+                <!-- XP progress -->
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small class="text-muted">
+                            <i class="bi bi-lightning-charge-fill text-warning"></i>
+                            {{ current_user.xp }} XP
+                        </small>
+                        <small class="text-muted">
+                            Daraja {{ current_user.level + 1 if current_user.level < 5 else 'MAX' }}
+                        </small>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar"
+                             role="progressbar"
+                             style="width: {{ current_user.xp_progress }}%"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Statistika -->
+            <div class="row mb-4">
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="card p-3 text-center">
+                        <h3 class="fw-bold text-primary mb-0">{{ current_user.xp }}</h3>
+                        <small class="text-muted">
+                            <i class="bi bi-lightning-charge-fill text-warning"></i> XP
+                        </small>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="card p-3 text-center">
+                        <h3 class="fw-bold text-primary mb-0">{{ total_exams }}</h3>
+                        <small class="text-muted">
+                            <i class="bi bi-pencil-square"></i> Test
+                        </small>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="card p-3 text-center">
+                        <h3 class="fw-bold text-primary mb-0">{{ total_correct }}</h3>
+                        <small class="text-muted">
+                            <i class="bi bi-check-circle-fill text-success"></i> To'g'ri
+                        </small>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="card p-3 text-center">
+                        <h3 class="fw-bold text-primary mb-0">{{ avg_percentage }}%</h3>
+                        <small class="text-muted">
+                            <i class="bi bi-bar-chart-fill"></i> O'rtacha
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <!-- So'nggi natijalar -->
+            <div class="card p-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-clock-history"></i> So'nggi natijalar
+                </h5>
+                {% if results %}
+                    <div class="list-group list-group-flush">
+                        {% for result in results|reverse %}
+                            {% set percentage = (result.score / result.total * 100)|round|int %}
+                            <div class="list-group-item px-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="fw-semibold mb-0">{{ result.exam.title }}</p>
+                                        <small class="text-muted">{{ result.finished_at.strftime("%d.%m.%Y %H:%M") }}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge {% if percentage >= 70 %}bg-success {% elif percentage >= 50 %}bg-warning {% else %}bg-danger{% endif %}">
+                                            {{ percentage }}%
+                                        </span>
+                                        <div>
+                                            <small class="text-warning fw-bold">
+                                                <i class="bi bi-lightning-charge-fill"></i>
+                                                {% if percentage >= 70 %}
+                                                    +{{ result.total * 10 }}
+                                                {% elif percentage >= 50 %}
+                                                    +{{ result.total * 5 }}
+                                                {% else %}
+                                                    +{{ result.total * 2 }}
+                                                {% endif %}
+                                                XP
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">
+                        <i class="bi bi-inbox"></i> Hali birorta test ishlamadingiz.
+                    </p>
+                {% endif %}
+            </div>
+            <a href="{{ url_for("auth.dashboard") }}"
+               class="btn btn-outline-secondary mt-3">
+                <i class="bi bi-arrow-left"></i> Orqaga
+            </a>
+        </div>
+    </div>
+{% endblock %}

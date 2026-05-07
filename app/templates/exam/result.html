@@ -43,7 +43,11 @@
                     &nbsp;|&nbsp;
                     <i class="bi bi-lightning-charge-fill"></i> Jami: {{ current_user.xp }} XP
                 </div>
-                {% if percentage >= 70 %}
+                {% if percentage == 100 %}
+                    <div class="alert alert-success mt-2">
+                        <i class="bi bi-stars"></i> Mukammal! Barcha savollar to'g'ri!
+                    </div>
+                {% elif percentage >= 70 %}
                     <div class="alert alert-success mt-2">
                         <i class="bi bi-trophy-fill"></i> Tabriklaymiz! Imtihondan o'tdingiz!
                     </div>

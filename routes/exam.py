@@ -262,12 +262,15 @@ def submit_exam(exam_id):
 
     # XP hisoblash
     percentage = round((score / total) * 100) if total > 0 else 0
+
+    xp_earned = total * 10  # har bir savol uchun 10 XP
+
     if percentage >= 70:
-        xp_earned = 100
+        xp_earned = total * 10
     elif percentage >= 50:
-        xp_earned = 50
+        xp_earned = total * 5
     else:
-        xp_earned = 20
+        xp_earned = total * 2
 
     current_user.add_xp(xp_earned)
     db.session.commit()

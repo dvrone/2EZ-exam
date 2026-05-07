@@ -12,45 +12,7 @@
               href="{{ url_for('static', filename='css/main.css') }}" />
     </head>
     <body>
-        <nav class="navbar navbar-dark px-4 py-3">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url_for("auth.index") }}">2EZ</a>
-                <div class="d-flex align-items-center gap-3">
-                    {% if current_user.is_authenticated %}
-                        <a href="{{ url_for("auth.leaderboard") }}"
-                           class="btn btn-outline-light btn-sm">
-                            <i class="bi bi-trophy-fill"></i>
-                        </a>
-                    {% endif %}
-                    <button id="themeToggle" class="btn btn-outline-light btn-sm">
-                        <i class="bi bi-moon-fill"></i>
-                    </button>
-                    {% if current_user.is_authenticated %}
-                        <a href="{{ url_for("auth.dashboard") }}"
-                           class="text-white text-decoration-none">
-                            <i class="bi bi-person-circle"></i> {{ current_user.username }}
-                        </a>
-                        {% if current_user.is_admin %}
-                            <span class="badge bg-warning text-dark">
-                                <i class="bi bi-shield-fill"></i> Admin
-                            </span>
-                        {% endif %}
-                        <a href="{{ url_for("auth.logout") }}"
-                           class="btn btn-outline-light btn-sm">
-                            <i class="bi bi-box-arrow-right"></i> Chiqish
-                        </a>
-                    {% else %}
-                        <a href="{{ url_for("auth.login") }}"
-                           class="btn btn-outline-light btn-sm">
-                            <i class="bi bi-box-arrow-in-right"></i> Kirish
-                        </a>
-                        <a href="{{ url_for("auth.register") }}" class="btn btn-light btn-sm">
-                            <i class="bi bi-person-plus"></i> Ro'yxatdan o'tish
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        </nav>
+        {% include "partials/navbar.html" %}
         <div class="container mt-4">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% for category, message in messages %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}

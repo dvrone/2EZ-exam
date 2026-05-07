@@ -96,3 +96,24 @@ def leaderboard():
         users = User.query.order_by(User.xp.desc()).limit(20).all()
 
     return render_template("auth/leaderboard.html", users=users)
+
+
+@auth.route("/profile")
+@login_required
+def profile():
+    results = Result.query.filter_by(user_id=current_user.id).all()
+    total_exams = len(results)
+    total_correct = sum(r.score for r in results)
+    total_questions = sum(r.total for r in results)
+    avg_percentage = (
+        round(total_correct / total_questions * 100) if total_questions > 0 else 0
+    )
+
+    return render_template(
+        "auth/profile.html",
+        results=results,
+        total_exams=total_exams,
+        total_correct=total_correct,
+        total_questions=total_questions,
+        avg_percentage=avg_percentage,
+    )
