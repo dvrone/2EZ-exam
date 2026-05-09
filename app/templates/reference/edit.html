@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">
+            <i class="bi bi-pencil text-primary"></i> Ma'lumotnomani tahrirlash
+        </h3>
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-7">
-            <h4 class="mb-4 fw-bold">
-                <i class="bi bi-pencil"></i> Ma'lumotnomani tahrirlash
-            </h4>
-            <div class="card p-4">
+            <div class="card border-0 shadow-sm p-4">
                 <form method="POST">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Sarlavha</label>
@@ -32,4 +35,5 @@
             </div>
         </div>
     </div>
+    <div class="mb-5"></div>
 {% endblock %}

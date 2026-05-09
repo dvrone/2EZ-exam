@@ -1,22 +1,37 @@
-const toggle = document.getElementById("themeToggle");
-const html = document.documentElement;
+/**
+ * theme.js — Dark / Light mavzu boshqaruvi
+ * Bootstrap 5.3 data-bs-theme atributiga asoslangan.
+ */
+document.addEventListener("DOMContentLoaded", function () {
+  const html = document.documentElement;
+  const btn = document.getElementById("themeToggle");
 
-// Saqlangan temani yuklash
-const saved = localStorage.getItem("theme") || "light";
-html.setAttribute("data-bs-theme", saved);
-updateIcon(saved);
+  function syncIcon() {
+    if (!btn) return;
+    const icon = btn.querySelector("i");
+    if (!icon) return;
+    icon.className =
+      html.getAttribute("data-bs-theme") === "dark"
+        ? "bi bi-sun-fill"
+        : "bi bi-moon-fill";
+  }
 
-toggle.addEventListener("click", () => {
-  const current = html.getAttribute("data-bs-theme");
-  const next = current === "light" ? "dark" : "light";
-  html.setAttribute("data-bs-theme", next);
-  localStorage.setItem("theme", next);
-  updateIcon(next);
+  syncIcon();
+
+  if (btn) {
+    btn.addEventListener("click", function () {
+      const next =
+        html.getAttribute("data-bs-theme") === "dark" ? "light" : "dark";
+      html.setAttribute("data-bs-theme", next);
+      localStorage.setItem("theme", next);
+      syncIcon();
+    });
+  }
+
+  // Bootstrap tooltiplarni ishga tushirish
+  document
+    .querySelectorAll('[data-bs-toggle="tooltip"]')
+    .forEach(function (el) {
+      new bootstrap.Tooltip(el);
+    });
 });
-
-function updateIcon(theme) {
-  toggle.innerHTML =
-    theme === "dark"
-      ? '<i class="bi bi-sun-fill"></i>'
-      : '<i class="bi bi-moon-fill"></i>';
-}

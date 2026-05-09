@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">
+            <i class="bi bi-plus-circle text-primary"></i> Savol qo'shish
+        </h3>
+        <span class="badge bg-primary fs-6">
+            <i class="bi bi-question-circle"></i> {{ exam.questions|length }} ta savol
+        </span>
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-7">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="fw-bold mb-0">
-                    <i class="bi bi-plus-circle"></i> Savol qo'shish
-                </h4>
-                <span class="badge bg-primary fs-6">
-                    <i class="bi bi-question-circle"></i> {{ exam.questions|length }} ta savol
-                </span>
-            </div>
-            <div class="card p-4">
+            <div class="card border-0 shadow-sm p-4">
                 <form method="POST">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Savol matni</label>
@@ -19,25 +20,25 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
-                                <span class="badge bg-light text-dark border">A</span> variant
+                                <span class="badge bg-body-secondary text-body border">A</span> variant
                             </label>
                             <input type="text" name="option_a" class="form-control" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
-                                <span class="badge bg-light text-dark border">B</span> variant
+                                <span class="badge bg-body-secondary text-body border">B</span> variant
                             </label>
                             <input type="text" name="option_b" class="form-control" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
-                                <span class="badge bg-light text-dark border">C</span> variant
+                                <span class="badge bg-body-secondary text-body border">C</span> variant
                             </label>
                             <input type="text" name="option_c" class="form-control" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
-                                <span class="badge bg-light text-dark border">D</span> variant
+                                <span class="badge bg-body-secondary text-body border">D</span> variant
                             </label>
                             <input type="text" name="option_d" class="form-control" required>
                         </div>
@@ -69,4 +70,5 @@
             </div>
         </div>
     </div>
+    <div class="mb-5"></div>
 {% endblock %}

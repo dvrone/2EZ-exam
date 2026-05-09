@@ -1,22 +1,30 @@
 {% extends 'base.html' %}
 {% block content %}
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">
+            <i class="bi bi-person-circle text-primary"></i> Profil
+        </h3>
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-7">
             <!-- Profil kartasi -->
-            <div class="card p-4 mb-4">
+            <div class="card border-0 shadow-sm p-4 mb-4">
                 <div class="d-flex flex-column align-items-center text-center">
-                    <!-- Avatar -->
-                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold fs-1 mb-3"
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold mb-3"
                          style="width: 80px;
-                                height: 80px">{{ current_user.username[0]|upper }}</div>
-                    <!-- Username -->
+                                height: 80px;
+                                font-size: 2rem">{{ current_user.username[0]|upper }}</div>
                     <h4 class="fw-bold mb-1 text-break">{{ current_user.username }}</h4>
-                    <!-- Email -->
                     <p class="text-muted small mb-2 text-break">{{ current_user.email }}</p>
-                    <!-- Badge + Level -->
                     <div class="d-flex align-items-center gap-2 flex-wrap justify-content-center">
                         <span class="badge bg-primary">{{ current_user.level_name }}</span>
                         <span class="text-muted small">Daraja {{ current_user.level }}</span>
+                        {% if current_user.is_admin %}
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-shield-fill"></i> Admin
+                            </span>
+                        {% endif %}
                     </div>
                 </div>
                 <!-- XP progress -->
@@ -30,41 +38,41 @@
                             Daraja {{ current_user.level + 1 if current_user.level < 5 else 'MAX' }}
                         </small>
                     </div>
-                    <div class="progress">
-                        <div class="progress-bar"
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
                              role="progressbar"
                              style="width: {{ current_user.xp_progress }}%"></div>
                     </div>
                 </div>
             </div>
             <!-- Statistika -->
-            <div class="row mb-4">
-                <div class="col-6 col-md-3 mb-3">
-                    <div class="card p-3 text-center">
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center p-3">
                         <h3 class="fw-bold text-primary mb-0">{{ current_user.xp }}</h3>
                         <small class="text-muted">
                             <i class="bi bi-lightning-charge-fill text-warning"></i> XP
                         </small>
                     </div>
                 </div>
-                <div class="col-6 col-md-3 mb-3">
-                    <div class="card p-3 text-center">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center p-3">
                         <h3 class="fw-bold text-primary mb-0">{{ total_exams }}</h3>
                         <small class="text-muted">
                             <i class="bi bi-pencil-square"></i> Test
                         </small>
                     </div>
                 </div>
-                <div class="col-6 col-md-3 mb-3">
-                    <div class="card p-3 text-center">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center p-3">
                         <h3 class="fw-bold text-primary mb-0">{{ total_correct }}</h3>
                         <small class="text-muted">
                             <i class="bi bi-check-circle-fill text-success"></i> To'g'ri
                         </small>
                     </div>
                 </div>
-                <div class="col-6 col-md-3 mb-3">
-                    <div class="card p-3 text-center">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center p-3">
                         <h3 class="fw-bold text-primary mb-0">{{ avg_percentage }}%</h3>
                         <small class="text-muted">
                             <i class="bi bi-bar-chart-fill"></i> O'rtacha
@@ -73,35 +81,31 @@
                 </div>
             </div>
             <!-- So'nggi natijalar -->
-            <div class="card p-4">
+            <div class="card border-0 shadow-sm p-4">
                 <h5 class="fw-bold mb-3">
-                    <i class="bi bi-clock-history"></i> So'nggi natijalar
+                    <i class="bi bi-clock-history text-primary"></i> So'nggi natijalar
                 </h5>
                 {% if results %}
                     <div class="list-group list-group-flush">
                         {% for result in results|reverse %}
                             {% set percentage = (result.score / result.total * 100)|round|int %}
-                            <div class="list-group-item px-0">
+                            {% set xp_gained = result.total * 10 if percentage >= 70 else result.total * 5 if percentage >= 50 else result.total * 2 %}
+                            <div class="list-group-item border-0 px-0">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <p class="fw-semibold mb-0">{{ result.exam.title }}</p>
-                                        <small class="text-muted">{{ result.finished_at.strftime("%d.%m.%Y %H:%M") }}</small>
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar3"></i>
+                                            {{ result.finished_at.strftime("%d.%m.%Y %H:%M") }}
+                                        </small>
                                     </div>
                                     <div class="text-end">
-                                        <span class="badge {% if percentage >= 70 %}bg-success {% elif percentage >= 50 %}bg-warning {% else %}bg-danger{% endif %}">
+                                        <span class="badge {% if percentage >= 70 %}bg-success {% elif percentage >= 50 %}bg-warning text-dark {% else %}bg-danger{% endif %}">
                                             {{ percentage }}%
                                         </span>
                                         <div>
                                             <small class="text-warning fw-bold">
-                                                <i class="bi bi-lightning-charge-fill"></i>
-                                                {% if percentage >= 70 %}
-                                                    +{{ result.total * 10 }}
-                                                {% elif percentage >= 50 %}
-                                                    +{{ result.total * 5 }}
-                                                {% else %}
-                                                    +{{ result.total * 2 }}
-                                                {% endif %}
-                                                XP
+                                                <i class="bi bi-lightning-charge-fill"></i> +{{ xp_gained }} XP
                                             </small>
                                         </div>
                                     </div>
@@ -110,15 +114,13 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-muted">
-                        <i class="bi bi-inbox"></i> Hali birorta test ishlamadingiz.
-                    </p>
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">Hali birorta test ishlamadingiz.</p>
+                    </div>
                 {% endif %}
             </div>
-            <a href="{{ url_for("auth.dashboard") }}"
-               class="btn btn-outline-secondary mt-3">
-                <i class="bi bi-arrow-left"></i> Orqaga
-            </a>
         </div>
     </div>
+    <div class="mb-5"></div>
 {% endblock %}

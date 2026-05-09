@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
+    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>
-            <i class="bi bi-book-fill"></i> Ma'lumotnoma
+        <h3 class="mb-0">
+            <i class="bi bi-book-fill text-primary"></i> Ma'lumotnoma
         </h3>
         {% if current_user.is_admin %}
             <a href="{{ url_for("reference.create_reference") }}"
@@ -17,8 +18,8 @@
                 <div class="col-md-4 mb-3">
                     <a href="{{ url_for('reference.detail_reference', ref_id=ref.id) }}"
                        class="text-decoration-none">
-                        <div class="card h-100 p-3"
-                             style="cursor:pointer;
+                        <div class="card border-0 shadow-sm h-100 p-3"
+                             style="cursor: pointer;
                                     transition: transform 0.2s"
                              onmouseover="this.style.transform='scale(1.02)'"
                              onmouseout="this.style.transform='scale(1)'">
@@ -30,7 +31,8 @@
                             </div>
                             <p class="text-muted small">{{ ref.content[:100] }}...</p>
                             <small class="text-muted">
-                                <i class="bi bi-calendar3"></i> {{ ref.created_at.strftime("%d.%m.%Y") }}
+                                <i class="bi bi-calendar3"></i>
+                                {{ ref.created_at.strftime("%d.%m.%Y") }}
                             </small>
                         </div>
                     </a>
@@ -43,4 +45,5 @@
             <p class="text-muted mt-2">Hali ma'lumotnomalar qo'shilmagan.</p>
         </div>
     {% endif %}
+    <div class="mb-5"></div>
 {% endblock %}

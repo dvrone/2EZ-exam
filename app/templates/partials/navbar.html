@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark px-4 py-3">
+<nav class="navbar px-4 py-3" data-bs-theme="dark">
     <div class="container">
         <a class="navbar-brand" href="{{ url_for("auth.index") }}">2EZ</a>
         <div class="d-flex align-items-center gap-3">
@@ -19,7 +19,7 @@
             <button id="themeToggle"
                     class="btn btn-outline-light btn-sm"
                     data-bs-toggle="tooltip"
-                    title="Theme">
+                    title="Mavzuni o'zgartirish">
                 <i class="bi bi-moon-fill"></i>
             </button>
             {% if current_user.is_authenticated %}

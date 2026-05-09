@@ -23,10 +23,19 @@ def register():
         username = request.form.get("username")
         email = request.form.get("email")
         password = request.form.get("password")
-        confirm = request.form.get("confirm_password")
 
-        if password != confirm:
-            flash("Parollar mos kelmadi!", "danger")
+        # Username validatsiya
+        import re
+
+        if not re.match(r"^[a-zA-Z0-9_]{3,20}$", username):
+            flash(
+                "Username faqat harflar, raqamlar va _ belgisidan iborat bo'lishi kerak (3-20 ta belgi).",
+                "danger",
+            )
+            return redirect(url_for("auth.register"))
+
+        if len(password) < 6:
+            flash("Parol kamida 6 ta belgidan iborat bo'lishi kerak!", "danger")
             return redirect(url_for("auth.register"))
 
         if User.query.filter_by(email=email).first():
@@ -42,7 +51,6 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        flash("Muvaffaqiyatli ro'yxatdan o'tdingiz!", "success")
         login_user(user)
         return redirect(url_for("auth.dashboard"))
 

@@ -1,15 +1,105 @@
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 
 /* ========================
+   CSS Variables
+======================== */
+:root {
+  --primary: #4a90d9;
+  --primary-hover: #357abd;
+  --success: #58cc02;
+  --danger: #ff4b4b;
+  --warning: #ffc800;
+}
+
+/* ========================
    Global
 ======================== */
 body {
-  background: #f0f4f8;
+  background: #f7f7f7;
   --bs-body-font-family: "Work Sans", sans-serif;
 }
 
+/* ========================
+   Dark mode — Duolingo uslubi
+======================== */
 [data-bs-theme="dark"] body {
-  background: #121212;
+  background: #131f24;
+}
+
+[data-bs-theme="dark"] .navbar {
+  background: #1a2f38 !important;
+  border-bottom: 2px solid #1cb0f6;
+}
+
+[data-bs-theme="dark"] .card {
+  background: #1a2f38;
+  border: 1px solid #243b47 !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-bs-theme="dark"] .list-group-item {
+  background: #1a2f38;
+  border-color: #243b47;
+}
+
+[data-bs-theme="dark"] .list-group-item-primary {
+  background: #1a3a4a;
+}
+
+[data-bs-theme="dark"] .table {
+  --bs-table-bg: #1a2f38;
+  --bs-table-hover-bg: #1f3a47;
+  border-color: #243b47;
+}
+
+[data-bs-theme="dark"] .table thead {
+  background: #111e26;
+}
+
+[data-bs-theme="dark"] .progress {
+  background: #243b47;
+}
+
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+  background: #1a2f38;
+  border-color: #2d4f60;
+  color: #e5e5e5;
+}
+
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+  background: #1a2f38;
+  border-color: #1cb0f6;
+  color: #e5e5e5;
+  box-shadow: 0 0 0 3px rgba(28, 176, 246, 0.2);
+}
+
+[data-bs-theme="dark"] .form-text {
+  color: #7a9aaa;
+}
+
+[data-bs-theme="dark"] .btn-outline-secondary {
+  border-color: #2d4f60;
+  color: #a0bec8;
+}
+
+[data-bs-theme="dark"] .btn-outline-secondary:hover {
+  background: #243b47;
+  border-color: #3a6070;
+  color: #e5e5e5;
+}
+
+[data-bs-theme="dark"] pre {
+  background: #111e26 !important;
+  border-color: #243b47 !important;
+  color: #e5e5e5;
+}
+
+[data-bs-theme="dark"] .alert-primary {
+  background: #1a3a4a;
+  border-color: #1cb0f6;
+  color: #1cb0f6;
 }
 
 /* ========================
@@ -17,25 +107,27 @@ body {
 ======================== */
 .navbar {
   background: #4a90d9 !important;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 .navbar-brand {
   font-weight: 800;
   font-size: 1.4rem;
   color: white !important;
+  letter-spacing: 1px;
 }
 
 /* ========================
    Buttons
 ======================== */
 .btn-primary {
-  background: #4a90d9;
-  border-color: #4a90d9;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 .btn-primary:hover {
-  background: #357abd;
-  border-color: #357abd;
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
 }
 
 /* ========================
@@ -45,10 +137,11 @@ body {
   border: none;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
 }
 
-[data-bs-theme="dark"] .card {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+.card:hover {
+  transform: translateY(-2px);
 }
 
 /* ========================
@@ -60,7 +153,25 @@ body {
 }
 
 /* ========================
-   Take exam options
+   Tables
+======================== */
+.table-hover tbody tr:hover {
+  background-color: rgba(74, 144, 217, 0.05);
+}
+
+/* ========================
+   Badge
+======================== */
+.badge {
+  transition: all 0.2s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* ========================
+   Take exam — Options
 ======================== */
 .option-btn {
   border: 2.5px solid #d1d9e0;
@@ -75,57 +186,65 @@ body {
 }
 
 .option-btn:hover:not(:disabled) {
-  border-color: #4a90d9;
+  border-color: var(--primary);
   background: #f0f7ff;
   cursor: pointer;
 }
 
 .option-btn.correct {
-  border-color: #58cc02 !important;
+  border-color: var(--success) !important;
   background: #f0fff0 !important;
-  color: #58cc02 !important;
+  color: var(--success) !important;
 }
 
 .option-btn.wrong {
-  border-color: #ff4b4b !important;
+  border-color: var(--danger) !important;
   background: #fff0f0 !important;
-  color: #ff4b4b !important;
+  color: var(--danger) !important;
   animation: shake 0.4s ease;
 }
 
 [data-bs-theme="dark"] .option-btn {
-  background: #2b3035;
-  border-color: #495057;
-  color: #dee2e6;
+  background: #1a2f38;
+  border-color: #2d4f60;
+  color: #e5e5e5;
 }
 
 [data-bs-theme="dark"] .option-btn:hover:not(:disabled) {
-  border-color: #4a90d9;
-  background: #1a2535;
+  border-color: #1cb0f6;
+  background: #1a3a4a;
 }
 
 [data-bs-theme="dark"] .option-btn.correct {
+  border-color: var(--success) !important;
   background: #1a2e1a !important;
+  color: var(--success) !important;
 }
 
 [data-bs-theme="dark"] .option-btn.wrong {
+  border-color: var(--danger) !important;
   background: #2e1a1a !important;
+  color: var(--danger) !important;
 }
 
 /* ========================
    Progress bar
 ======================== */
 .progress-bar-custom {
-  background: #4a90d9;
+  background: var(--primary);
   border-radius: 10px;
   transition: width 0.5s ease;
+}
+
+.progress-bar {
+  transition: width 1s ease-in-out;
 }
 
 /* ========================
    Timer warning
 ======================== */
 .timer-warning {
-  background: #ff4b4b !important;
+  background: var(--danger) !important;
   color: white !important;
 }
 

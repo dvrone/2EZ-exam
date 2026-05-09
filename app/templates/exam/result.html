@@ -3,7 +3,8 @@
     <div class="row justify-content-center">
         <div class="col-md-6 text-center">
             <script id="percentageData" type="application/json">{{ percentage }}</script>
-            <div class="card p-5 mb-4">
+            <div class="card border-0 shadow-sm p-5 mb-4">
+                <!-- Doira -->
                 <div style="position: relative;
                             width: 160px;
                             height: 160px;
@@ -34,8 +35,8 @@
                 </div>
                 <h4 class="fw-bold">{{ result.exam.title }}</h4>
                 <p class="text-muted">
-                    <i class="bi bi-check-circle"></i> {{ result.score }} /
-                    {{ result.total }} to'g'ri javob
+                    <i class="bi bi-check-circle"></i>
+                    {{ result.score }} / {{ result.total }} to'g'ri javob
                 </p>
                 <!-- XP -->
                 <div class="alert alert-primary mt-2 fw-bold">
@@ -43,6 +44,7 @@
                     &nbsp;|&nbsp;
                     <i class="bi bi-lightning-charge-fill"></i> Jami: {{ current_user.xp }} XP
                 </div>
+                <!-- Natija -->
                 {% if percentage == 100 %}
                     <div class="alert alert-success mt-2">
                         <i class="bi bi-stars"></i> Mukammal! Barcha savollar to'g'ri!
@@ -61,6 +63,7 @@
                     </div>
                 {% endif %}
             </div>
+            <!-- Tugmalar -->
             <div class="d-flex gap-3">
                 <a href="{{ url_for('exam.start_exam', exam_id=result.exam.id) }}"
                    class="btn btn-outline-primary w-100 py-3 fw-bold"
@@ -75,5 +78,6 @@
             </div>
         </div>
     </div>
+    <div class="mb-5"></div>
 {% endblock %}
 {% block scripts %}<script src="{{ url_for('static', filename='js/result.js') }}"></script>{% endblock %}
