@@ -5,6 +5,16 @@ let known = 0;
 let unknown = 0;
 let flipped = false;
 
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-US";
+  utterance.rate = 0.9;
+  utterance.pitch = 1;
+  window.speechSynthesis.speak(utterance);
+}
+
 function playSound(type) {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -59,7 +69,7 @@ function renderCard() {
   document.getElementById("cardBack").classList.add("d-none");
   document.getElementById("actionBtns").classList.add("d-none");
 
-  card.style.background = "";
+  card.style.borderColor = "";
   updateProgress();
 }
 
@@ -76,6 +86,8 @@ function flipCard() {
 }
 
 function nextWord(didKnow) {
+  window.speechSynthesis.cancel();
+
   if (didKnow) {
     known++;
     playSound("correct");
@@ -104,7 +116,6 @@ function showResult() {
   document.getElementById("unknownCount").textContent = unknown;
   document.getElementById("resultDiv").classList.remove("d-none");
 
-  // G'alaba ovozi
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const gain = ctx.createGain();
@@ -135,13 +146,10 @@ function restartFlashcard() {
   renderCard();
 }
 
-// Klaviatura boshqaruvi
 document.addEventListener("keydown", (e) => {
   if (e.key === " " || e.key === "Enter") {
     e.preventDefault();
-    if (!flipped) {
-      flipCard();
-    }
+    if (!flipped) flipCard();
   } else if (e.key === "ArrowLeft") {
     if (flipped) nextWord(false);
   } else if (e.key === "ArrowRight") {

@@ -5,6 +5,16 @@ let current = 0;
 let score = 0;
 let answered = false;
 
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-US";
+  utterance.rate = 0.9;
+  utterance.pitch = 1;
+  window.speechSynthesis.speak(utterance);
+}
+
 function playSound(type) {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -40,7 +50,6 @@ function vibrate(type) {
 function buildQuestions() {
   const shuffled = [...words].sort(() => Math.random() - 0.5);
   questions = shuffled.map((w) => {
-    // To'g'ri javobdan tashqari 3 ta noto'g'ri variant
     const wrong = words
       .filter((x) => x.id !== w.id)
       .sort(() => Math.random() - 0.5)
@@ -133,6 +142,7 @@ function renderQuestion() {
 }
 
 document.getElementById("continueBtn").onclick = () => {
+  window.speechSynthesis.cancel();
   current++;
   if (current >= questions.length) {
     showResult();
@@ -151,16 +161,14 @@ function showResult() {
   document.getElementById("scoreText").textContent =
     `${score} / ${questions.length} to'g'ri javob`;
 
-  // Doira animatsiyasi
   let curr = 0;
   const interval = setInterval(() => {
     curr = Math.min(curr + 2, percentage);
     document.getElementById("percentText").textContent = curr + "%";
     const dasharray = (curr / 100) * 439.8;
-    document.getElementById("resultCircle").setAttribute(
-      "stroke-dasharray",
-      `${dasharray} 439.8`
-    );
+    document
+      .getElementById("resultCircle")
+      .setAttribute("stroke-dasharray", `${dasharray} 439.8`);
     const color =
       percentage >= 70 ? "#58cc02" : percentage >= 50 ? "#ffc800" : "#ff4b4b";
     document.getElementById("resultCircle").setAttribute("stroke", color);
@@ -170,7 +178,6 @@ function showResult() {
 
   document.getElementById("resultDiv").classList.remove("d-none");
 
-  // Ovoz
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const gain = ctx.createGain();
