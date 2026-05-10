@@ -34,10 +34,12 @@ def create_app():
     from routes.auth import auth
     from routes.exam import exam_bp
     from routes.reference import reference_bp
+    from routes.vocab import vocab_bp
 
     app.register_blueprint(auth)
     app.register_blueprint(exam_bp)
     app.register_blueprint(reference_bp)
+    app.register_blueprint(vocab_bp)
 
     @app.errorhandler(404)
     def page_not_found(e):

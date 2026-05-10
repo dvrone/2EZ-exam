@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}To'plamni tahrirlash{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">
+            <i class="bi bi-pencil text-primary"></i> To'plamni tahrirlash
+        </h3>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">To'plam nomi</label>
+                        <input type="text"
+                               name="title"
+                               class="form-control"
+                               value="{{ vocab_set.title }}"
+                               required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Tavsif</label>
+                        <textarea name="description" class="form-control" rows="3">{{ vocab_set.description or '' }}</textarea>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                            <i class="bi bi-save"></i> Saqlash
+                        </button>
+                        <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
+                           class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-x-lg"></i> Bekor qilish
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="mb-5"></div>
+{% endblock %}

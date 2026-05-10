@@ -125,3 +125,31 @@ class Reference(db.Model):
 
     def __repr__(self):
         return f"<Reference {self.title}>"
+
+
+class VocabSet(db.Model):
+    __tablename__ = "vocab_sets"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    words = db.relationship("Vocab", backref="set", cascade="all, delete-orphan")
+
+    def __repr__(self):
+        return f"<VocabSet {self.title}>"
+
+
+class Vocab(db.Model):
+    __tablename__ = "vocab"
+
+    id = db.Column(db.Integer, primary_key=True)
+    set_id = db.Column(db.Integer, db.ForeignKey("vocab_sets.id"), nullable=False)
+    word = db.Column(db.String(200), nullable=False)
+    translation = db.Column(db.String(200), nullable=False)
+    example = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    def __repr__(self):
+        return f"<Vocab {self.word}>"

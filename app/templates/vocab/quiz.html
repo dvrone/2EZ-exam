@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Quiz — {{ vocab_set.title }}{% endblock %}
+{% block content %}
+    <script id="wordsData" type="application/json">
+  [
+    {% for word in words %}
+    {
+      "id": {{ word.id }},
+      "word": {{ word.word | tojson }},
+      "translation": {{ word.translation | tojson }}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+    </script>
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <!-- Progress -->
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
+                   class="text-muted text-decoration-none fs-5">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+                <div class="progress flex-grow-1"
+                     style="height: 12px;
+                            border-radius: 10px">
+                    <div class="progress-bar progress-bar-custom"
+                         id="progressBar"
+                         style="width: 0%"></div>
+                </div>
+                <span class="text-muted small">
+                    <span id="currentNum">1</span> / <span id="totalNum"></span>
+                </span>
+            </div>
+            <!-- Savol kartasi -->
+            <div id="questionCard"
+                 class="card border-0 shadow-sm p-4 mb-4"
+                 style="min-height: 300px">
+                <p class="text-muted small mb-2">Tarjimasini tanlang</p>
+                <h4 id="wordText" class="fw-bold mb-4"></h4>
+                <div id="optionsContainer" class="d-flex flex-column gap-3"></div>
+            </div>
+            <!-- Davom etish -->
+            <button id="continueBtn"
+                    class="btn btn-primary w-100 py-3 fw-bold d-none"
+                    style="border-radius: 14px;
+                           font-size: 1.1rem">
+                Davom etish <i class="bi bi-arrow-right"></i>
+            </button>
+            <!-- Natija -->
+            <div id="resultDiv" class="d-none text-center">
+                <div class="card border-0 shadow-sm p-5">
+                    <div style="position: relative;
+                                width: 140px;
+                                height: 140px;
+                                margin: 0 auto 20px">
+                        <svg viewBox="0 0 160 160" style="transform: rotate(-90deg);">
+                            <circle cx="80" cy="80" r="70" fill="none" stroke="#f0f4f8" stroke-width="12" />
+                            <circle cx="80" cy="80" r="70" fill="none" stroke="#58cc02" stroke-width="12" stroke-linecap="round" id="resultCircle" stroke-dasharray="0 439.8" style="transition: stroke-dasharray 1s ease;" />
+                        </svg>
+                        <div style="position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%)">
+                            <div class="fw-bold text-success" id="percentText" style="font-size: 2rem">0%</div>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold">Quiz yakunlandi!</h3>
+                    <p class="text-muted">
+                        <span class="text-success fw-bold" id="scoreText"></span>
+                    </p>
+                    <div class="d-flex gap-3 mt-3">
+                        <button onclick="restartQuiz()" class="btn btn-primary w-100 py-2 fw-bold">
+                            <i class="bi bi-arrow-repeat"></i> Qayta
+                        </button>
+                        <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
+                           class="btn btn-outline-secondary w-100 py-2 fw-bold">
+                            <i class="bi bi-arrow-left"></i> Orqaga
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mb-5"></div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/vocab_quiz.js') }}"></script>{% endblock %}
