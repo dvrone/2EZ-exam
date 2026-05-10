@@ -1,3 +1,4 @@
+import json
 import random
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
@@ -170,3 +171,46 @@ def quiz(set_id):
     words = list(vocab_set.words)
     random.shuffle(words)
     return render_template("vocab/quiz.html", vocab_set=vocab_set, words=words)
+
+
+@vocab_bp.route("/vocab/<int:set_id>/upload-words", methods=["GET", "POST"])
+@login_required
+@admin_required
+def upload_words(set_id):
+    vocab_set = VocabSet.query.get_or_404(set_id)
+
+    if request.method == "POST":
+        file = request.files.get("file")
+
+        if not file or not file.filename.endswith(".json"):
+            flash("Faqat .json fayl qabul qilinadi!", "danger")
+            return redirect(request.url)
+
+        try:
+            data = json.loads(file.read().decode("utf-8"))
+        except Exception:
+            flash("JSON fayl noto'g'ri formatda!", "danger")
+            return redirect(request.url)
+
+        if not isinstance(data, list):
+            flash("JSON fayl ro'yxat bo'lishi kerak!", "danger")
+            return redirect(request.url)
+
+        count = 0
+        for item in data:
+            if "word" not in item or "translation" not in item:
+                continue
+            word = Vocab(
+                set_id=vocab_set.id,
+                word=item["word"],
+                translation=item["translation"],
+                example=item.get("example", None),
+            )
+            db.session.add(word)
+            count += 1
+
+        db.session.commit()
+        flash(f"{count} ta so'z yuklandi!", "success")
+        return redirect(url_for("vocab.detail_set", set_id=vocab_set.id))
+
+    return render_template("vocab/upload_words.html", vocab_set=vocab_set)

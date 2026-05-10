@@ -54,6 +54,10 @@
                            class="btn btn-outline-secondary btn-sm">
                             <i class="bi bi-pencil"></i> Tahrirlash
                         </a>
+                        <a href="{{ url_for('vocab.upload_words', set_id=vocab_set.id) }}"
+                           class="btn btn-outline-warning btn-sm">
+                            <i class="bi bi-upload"></i> JSON yuklash
+                        </a>
                         <form method="POST"
                               action="{{ url_for('vocab.delete_set', set_id=vocab_set.id) }}"
                               onsubmit="return confirm('Ochirish?')">
