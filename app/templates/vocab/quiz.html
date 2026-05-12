@@ -12,6 +12,7 @@
     {% endfor %}
   ]
     </script>
+    <script id="submitUrl" type="application/json">"{{ url_for('vocab.submit_quiz', set_id=vocab_set.id) }}"</script>
     <div class="row justify-content-center">
         <div class="col-md-7">
             <!-- Progress -->
@@ -70,8 +71,12 @@
                     </div>
                     <h3 class="fw-bold">Quiz yakunlandi!</h3>
                     <p class="text-muted">
-                        <span class="text-success fw-bold" id="scoreText"></span>
+                        <span class="fw-bold" id="scoreText"></span>
                     </p>
+                    <!-- XP -->
+                    <div id="xpInfo" class="alert alert-primary mt-2 fw-bold d-none">
+                        <i class="bi bi-stars"></i> <span id="xpEarned"></span>
+                    </div>
                     <div class="d-flex gap-3 mt-3">
                         <button onclick="restartQuiz()" class="btn btn-primary w-100 py-2 fw-bold">
                             <i class="bi bi-arrow-repeat"></i> Qayta

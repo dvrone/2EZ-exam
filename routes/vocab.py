@@ -214,3 +214,26 @@ def upload_words(set_id):
         return redirect(url_for("vocab.detail_set", set_id=vocab_set.id))
 
     return render_template("vocab/upload_words.html", vocab_set=vocab_set)
+
+
+@vocab_bp.route("/vocab/<int:set_id>/quiz/submit", methods=["POST"])
+@login_required
+def submit_quiz(set_id):
+    vocab_set = VocabSet.query.get_or_404(set_id)
+    score = request.json.get("score", 0)
+    total = request.json.get("total", 0)
+
+    if total > 0:
+        percentage = round(score / total * 100)
+        if percentage >= 70:
+            xp_earned = total * 10
+        elif percentage >= 50:
+            xp_earned = total * 5
+        else:
+            xp_earned = total * 2
+
+        current_user.add_xp(xp_earned)
+        db.session.commit()
+        return {"xp": xp_earned, "total_xp": current_user.xp}
+
+    return {"xp": 0, "total_xp": current_user.xp}

@@ -1,4 +1,5 @@
 const words = JSON.parse(document.getElementById("wordsData").textContent);
+const submitUrl = document.getElementById("submitUrl").textContent.trim();
 
 let questions = [];
 let current = 0;
@@ -6,13 +7,15 @@ let score = 0;
 let answered = false;
 
 function speak(text) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-US";
-  utterance.rate = 0.9;
-  utterance.pitch = 1;
-  window.speechSynthesis.speak(utterance);
+  try {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+  } catch (e) {}
 }
 
 function playSound(type) {
@@ -22,7 +25,6 @@ function playSound(type) {
     const gain = ctx.createGain();
     osc.connect(gain);
     gain.connect(ctx.destination);
-
     if (type === "correct") {
       osc.frequency.setValueAtTime(523, ctx.currentTime);
       osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
@@ -43,8 +45,10 @@ function playSound(type) {
 }
 
 function vibrate(type) {
-  if (!navigator.vibrate) return;
-  navigator.vibrate(type === "correct" ? 100 : [100, 50, 100]);
+  try {
+    if (!navigator.vibrate) return;
+    navigator.vibrate(type === "correct" ? 100 : [100, 50, 100]);
+  } catch (e) {}
 }
 
 function buildQuestions() {
@@ -55,16 +59,9 @@ function buildQuestions() {
       .sort(() => Math.random() - 0.5)
       .slice(0, 3)
       .map((x) => x.translation);
-
     const options = [...wrong, w.translation].sort(() => Math.random() - 0.5);
-
-    return {
-      word: w.word,
-      correct: w.translation,
-      options: options,
-    };
+    return { word: w.word, correct: w.translation, options };
   });
-
   document.getElementById("totalNum").textContent = questions.length;
 }
 
@@ -121,13 +118,11 @@ function renderQuestion() {
         btn.classList.add("wrong");
         playSound("wrong");
         vibrate("wrong");
-
         container.querySelectorAll("button").forEach((b) => {
           if (b.getAttribute("data-value") === q.correct) {
             b.classList.add("correct");
           }
         });
-
         continueBtn.style.background = "#ff4b4b";
         continueBtn.style.borderColor = "#ff4b4b";
       }
@@ -142,7 +137,9 @@ function renderQuestion() {
 }
 
 document.getElementById("continueBtn").onclick = () => {
-  window.speechSynthesis.cancel();
+  try {
+    window.speechSynthesis.cancel();
+  } catch (e) {}
   current++;
   if (current >= questions.length) {
     showResult();
@@ -151,16 +148,31 @@ document.getElementById("continueBtn").onclick = () => {
   }
 };
 
-function showResult() {
+async function showResult() {
   document.getElementById("questionCard").classList.add("d-none");
   document.getElementById("continueBtn").classList.add("d-none");
   document.getElementById("progressBar").style.width = "100%";
 
   const percentage = Math.round((score / questions.length) * 100);
-
   document.getElementById("scoreText").textContent =
     `${score} / ${questions.length} to'g'ri javob`;
 
+  // XP backend ga yuborish
+  try {
+    const res = await fetch(submitUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ score, total: questions.length }),
+    });
+    const data = await res.json();
+    if (data.xp) {
+      document.getElementById("xpEarned").textContent =
+        `+${data.xp} XP qo'shildi!`;
+      document.getElementById("xpInfo").classList.remove("d-none");
+    }
+  } catch (e) {}
+
+  // Doira animatsiyasi
   let curr = 0;
   const interval = setInterval(() => {
     curr = Math.min(curr + 2, percentage);
@@ -206,11 +218,10 @@ function restartQuiz() {
   current = 0;
   score = 0;
   answered = false;
-
   document.getElementById("questionCard").classList.remove("d-none");
   document.getElementById("resultDiv").classList.add("d-none");
+  document.getElementById("xpInfo").classList.add("d-none");
   document.getElementById("progressBar").style.width = "0%";
-
   buildQuestions();
   renderQuestion();
 }

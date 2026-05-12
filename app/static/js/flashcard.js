@@ -5,14 +5,17 @@ let known = 0;
 let unknown = 0;
 let flipped = false;
 
+// TTS — xavfsiz
 function speak(text) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-US";
-  utterance.rate = 0.9;
-  utterance.pitch = 1;
-  window.speechSynthesis.speak(utterance);
+  try {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+  } catch (e) {}
 }
 
 function playSound(type) {
@@ -22,7 +25,6 @@ function playSound(type) {
     const gain = ctx.createGain();
     osc.connect(gain);
     gain.connect(ctx.destination);
-
     if (type === "correct") {
       osc.frequency.setValueAtTime(523, ctx.currentTime);
       osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
@@ -42,8 +44,10 @@ function playSound(type) {
 }
 
 function vibrate(type) {
-  if (!navigator.vibrate) return;
-  navigator.vibrate(type === "correct" ? 100 : [100, 50, 100]);
+  try {
+    if (!navigator.vibrate) return;
+    navigator.vibrate(type === "correct" ? 100 : [100, 50, 100]);
+  } catch (e) {}
 }
 
 function updateProgress() {
@@ -65,8 +69,9 @@ function renderCard() {
   document.getElementById("translationText").textContent = w.translation;
   document.getElementById("exampleText").textContent = w.example || "";
 
-  document.getElementById("cardFront").classList.remove("d-none");
-  document.getElementById("cardBack").classList.add("d-none");
+  // Front ko'rsatish, back yashirish
+  document.getElementById("cardFront").style.display = "block";
+  document.getElementById("cardBack").style.display = "none";
   document.getElementById("actionBtns").classList.add("d-none");
 
   card.style.borderColor = "";
@@ -77,16 +82,17 @@ function flipCard() {
   if (flipped) return;
   flipped = true;
 
-  const card = document.getElementById("flashcard");
-  document.getElementById("cardFront").classList.add("d-none");
-  document.getElementById("cardBack").classList.remove("d-none");
+  document.getElementById("cardFront").style.display = "none";
+  document.getElementById("cardBack").style.display = "block";
   document.getElementById("actionBtns").classList.remove("d-none");
 
-  card.style.borderColor = "#4a90d9";
+  document.getElementById("flashcard").style.borderColor = "#4a90d9";
 }
 
 function nextWord(didKnow) {
-  window.speechSynthesis.cancel();
+  try {
+    window.speechSynthesis.cancel();
+  } catch (e) {}
 
   if (didKnow) {
     known++;
@@ -111,7 +117,6 @@ function showResult() {
   document.getElementById("flashcard").classList.add("d-none");
   document.getElementById("actionBtns").classList.add("d-none");
   document.getElementById("progressBar").style.width = "100%";
-
   document.getElementById("knownCount").textContent = known;
   document.getElementById("unknownCount").textContent = unknown;
   document.getElementById("resultDiv").classList.remove("d-none");
@@ -136,13 +141,10 @@ function restartFlashcard() {
   current = 0;
   known = 0;
   unknown = 0;
-
   words.sort(() => Math.random() - 0.5);
-
   document.getElementById("flashcard").classList.remove("d-none");
   document.getElementById("resultDiv").classList.add("d-none");
   document.getElementById("progressBar").style.width = "0%";
-
   renderCard();
 }
 
