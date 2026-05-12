@@ -1,5 +1,8 @@
 const words = JSON.parse(document.getElementById("wordsData").textContent);
-const submitUrl = document.getElementById("submitUrl").textContent.trim();
+const submitUrl = document
+  .getElementById("submitUrl")
+  .textContent.trim()
+  .replace(/"/g, "");
 
 let questions = [];
 let current = 0;
@@ -157,7 +160,6 @@ async function showResult() {
   document.getElementById("scoreText").textContent =
     `${score} / ${questions.length} to'g'ri javob`;
 
-  // XP backend ga yuborish
   try {
     const res = await fetch(submitUrl, {
       method: "POST",
@@ -172,7 +174,6 @@ async function showResult() {
     }
   } catch (e) {}
 
-  // Doira animatsiyasi
   let curr = 0;
   const interval = setInterval(() => {
     curr = Math.min(curr + 2, percentage);
@@ -225,6 +226,16 @@ function restartQuiz() {
   buildQuestions();
   renderQuestion();
 }
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === " " || e.key === "Enter") {
+    e.preventDefault();
+    const continueBtn = document.getElementById("continueBtn");
+    if (!continueBtn.classList.contains("d-none")) {
+      continueBtn.click();
+    }
+  }
+});
 
 buildQuestions();
 renderQuestion();

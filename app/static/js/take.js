@@ -38,12 +38,10 @@ function playSound(type) {
 }
 
 function vibrate(type) {
-  if (!navigator.vibrate) return;
-  if (type === "correct") {
-    navigator.vibrate(100);
-  } else {
-    navigator.vibrate([100, 50, 100]);
-  }
+  try {
+    if (!navigator.vibrate) return;
+    navigator.vibrate(type === "correct" ? 100 : [100, 50, 100]);
+  } catch (e) {}
 }
 
 function updateProgress() {
@@ -163,5 +161,15 @@ const countdown = setInterval(() => {
     timerEl.parentElement.classList.add("timer-warning");
   }
 }, 1000);
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === " " || e.key === "Enter") {
+    e.preventDefault();
+    const continueBtn = document.getElementById("continueBtn");
+    if (!continueBtn.classList.contains("d-none")) {
+      continueBtn.click();
+    }
+  }
+});
 
 renderQuestion();
