@@ -42,15 +42,19 @@
                                 <!-- Info -->
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center gap-2 flex-wrap">
-                                        <span class="fw-bold">{{ user.username }}</span>
-                                        {% if user.id == current_user.id %}<span class="badge bg-primary">Sen</span>{% endif %}
+                                        {% if user.id == current_user.id %}
+                                            <span class="fw-bold">{{ user.username }}</span>
+                                            <span class="badge bg-primary">Sen</span>
+                                        {% else %}
+                                            <a href="{{ url_for('auth.user_profile', user_id=user.id) }}"
+                                               class="fw-bold text-decoration-none">{{ user.username }}</a>
+                                        {% endif %}
                                         {% if user.is_admin %}
                                             <span class="badge bg-warning text-dark">
                                                 <i class="bi bi-shield-fill"></i>
                                             </span>
                                         {% endif %}
                                     </div>
-                                    <small class="text-muted">{{ user.level_name }}</small>
                                 </div>
                                 <!-- XP -->
                                 <div class="text-end">

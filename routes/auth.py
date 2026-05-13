@@ -1,4 +1,5 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import (Blueprint, abort, flash, redirect, render_template, request,
+                   url_for)
 from flask_login import current_user, login_required, login_user, logout_user
 
 from app import db
@@ -152,3 +153,33 @@ def settings():
         return redirect(url_for("auth.profile"))
 
     return render_template("auth/settings.html")
+
+
+@auth.route("/user/<int:user_id>")
+@login_required
+def user_profile(user_id):
+    user = db.session.get(User, user_id)
+    if not user:
+        abort(404)
+
+    results = (
+        Result.query.filter_by(user_id=user.id)
+        .order_by(Result.finished_at.desc())
+        .all()
+    )
+    total_exams = len(results)
+    total_correct = sum(r.score for r in results)
+    total_questions = sum(r.total for r in results)
+    avg_percentage = (
+        round(total_correct / total_questions * 100) if total_questions > 0 else 0
+    )
+
+    return render_template(
+        "auth/user_profile.html",
+        user=user,
+        results=results,
+        total_exams=total_exams,
+        total_correct=total_correct,
+        total_questions=total_questions,
+        avg_percentage=avg_percentage,
+    )
