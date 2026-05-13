@@ -17,6 +17,11 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(200), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     xp = db.Column(db.Integer, default=0)
+    bio = db.Column(db.String(300), nullable=True)
+    github = db.Column(db.String(100), nullable=True)
+    telegram = db.Column(db.String(100), nullable=True)
+    instagram = db.Column(db.String(100), nullable=True)
+    website = db.Column(db.String(200), nullable=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     def set_password(self, password):

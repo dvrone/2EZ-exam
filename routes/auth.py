@@ -109,7 +109,11 @@ def leaderboard():
 @auth.route("/profile")
 @login_required
 def profile():
-    results = Result.query.filter_by(user_id=current_user.id).all()
+    results = (
+        Result.query.filter_by(user_id=current_user.id)
+        .order_by(Result.finished_at.desc())
+        .all()
+    )
     total_exams = len(results)
     total_correct = sum(r.score for r in results)
     total_questions = sum(r.total for r in results)
@@ -125,3 +129,26 @@ def profile():
         total_questions=total_questions,
         avg_percentage=avg_percentage,
     )
+
+
+@auth.route("/settings", methods=["GET", "POST"])
+@login_required
+def settings():
+    if request.method == "POST":
+        bio = request.form.get("bio", "").strip()
+        github = request.form.get("github", "").strip()
+        telegram = request.form.get("telegram", "").strip()
+        instagram = request.form.get("instagram", "").strip()
+        website = request.form.get("website", "").strip()
+
+        current_user.bio = bio or None
+        current_user.github = github or None
+        current_user.telegram = telegram or None
+        current_user.instagram = instagram or None
+        current_user.website = website or None
+
+        db.session.commit()
+        flash("Profil yangilandi!", "success")
+        return redirect(url_for("auth.profile"))
+
+    return render_template("auth/settings.html")

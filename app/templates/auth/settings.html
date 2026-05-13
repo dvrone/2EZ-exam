@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Sozlamalar{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">
+            <i class="bi bi-gear-fill text-primary"></i> Sozlamalar
+        </h3>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-person-lines-fill"></i> Bio
+                        </label>
+                        <textarea name="bio"
+                                  class="form-control"
+                                  rows="3"
+                                  maxlength="300"
+                                  placeholder="O'zingiz haqingizda qisqacha...">{{ current_user.bio or '' }}</textarea>
+                        <div class="form-text text-muted">Maksimal 300 ta belgi.</div>
+                    </div>
+                    <hr class="my-4">
+                    <p class="fw-semibold text-muted mb-3">
+                        <i class="bi bi-share-fill"></i> Ijtimoiy tarmoqlar
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-github"></i> GitHub
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">github.com/</span>
+                            <input type="text"
+                                   name="github"
+                                   class="form-control"
+                                   placeholder="username"
+                                   value="{{ current_user.github or '' }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-telegram"></i> Telegram
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">t.me/</span>
+                            <input type="text"
+                                   name="telegram"
+                                   class="form-control"
+                                   placeholder="username"
+                                   value="{{ current_user.telegram or '' }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-instagram"></i> Instagram
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">instagram.com/</span>
+                            <input type="text"
+                                   name="instagram"
+                                   class="form-control"
+                                   placeholder="username"
+                                   value="{{ current_user.instagram or '' }}">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-globe"></i> Website
+                        </label>
+                        <input type="url"
+                               name="website"
+                               class="form-control"
+                               placeholder="https://example.com"
+                               value="{{ current_user.website or '' }}">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                            <i class="bi bi-save"></i> Saqlash
+                        </button>
+                        <a href="{{ url_for("auth.profile") }}"
+                           class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-x-lg"></i> Bekor qilish
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="mb-5"></div>
+{% endblock %}

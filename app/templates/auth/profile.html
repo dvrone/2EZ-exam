@@ -12,12 +12,16 @@
             <!-- Profil kartasi -->
             <div class="card border-0 shadow-sm p-4 mb-4">
                 <div class="d-flex flex-column align-items-center text-center">
+                    <!-- Avatar -->
                     <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold mb-3"
                          style="width: 80px;
                                 height: 80px;
                                 font-size: 2rem">{{ current_user.username[0]|upper }}</div>
+                    <!-- Username -->
                     <h4 class="fw-bold mb-1 text-break">{{ current_user.username }}</h4>
+                    <!-- Email -->
                     <p class="text-muted small mb-2 text-break">{{ current_user.email }}</p>
+                    <!-- Badge + Level -->
                     <div class="d-flex align-items-center gap-2 flex-wrap justify-content-center">
                         <span class="badge bg-primary">{{ current_user.level_name }}</span>
                         <span class="text-muted small">Daraja {{ current_user.level }}</span>
@@ -27,6 +31,47 @@
                             </span>
                         {% endif %}
                     </div>
+                    <!-- Bio -->
+                    {% if current_user.bio %}<p class="text-muted mt-3 mb-0 px-2">{{ current_user.bio }}</p>{% endif %}
+                    <!-- Social linklar -->
+                    {% if current_user.github or current_user.telegram or current_user.instagram or current_user.website %}
+                        <div class="d-flex gap-3 mt-3 justify-content-center flex-wrap">
+                            {% if current_user.github %}
+                                <a href="https://github.com/{{ current_user.github }}"
+                                   target="_blank"
+                                   class="text-decoration-none text-muted fs-4">
+                                    <i class="bi bi-github"></i>
+                                </a>
+                            {% endif %}
+                            {% if current_user.telegram %}
+                                <a href="https://t.me/{{ current_user.telegram }}"
+                                   target="_blank"
+                                   class="text-decoration-none text-primary fs-4">
+                                    <i class="bi bi-telegram"></i>
+                                </a>
+                            {% endif %}
+                            {% if current_user.instagram %}
+                                <a href="https://instagram.com/{{ current_user.instagram }}"
+                                   target="_blank"
+                                   class="text-decoration-none fs-4"
+                                   style="color: #e1306c">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                            {% endif %}
+                            {% if current_user.website %}
+                                <a href="{{ current_user.website }}"
+                                   target="_blank"
+                                   class="text-decoration-none text-success fs-4">
+                                    <i class="bi bi-globe"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    <!-- Sozlamalar -->
+                    <a href="{{ url_for("auth.settings") }}"
+                       class="btn btn-outline-secondary btn-sm mt-3">
+                        <i class="bi bi-gear-fill"></i> Sozlamalar
+                    </a>
                 </div>
                 <!-- XP progress -->
                 <div class="mt-4">

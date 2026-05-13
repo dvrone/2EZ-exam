@@ -29,6 +29,12 @@
                    title="{{ current_user.username }}">
                     <i class="bi bi-person-circle"></i>
                 </a>
+                <a href="{{ url_for("auth.settings") }}"
+                   class="btn btn-outline-light btn-sm {% if request.endpoint == 'auth.settings' %}active{% endif %}"
+                   data-bs-toggle="tooltip"
+                   title="Sozlamalar">
+                    <i class="bi bi-gear-fill"></i>
+                </a>
                 <a href="{{ url_for("auth.logout") }}"
                    class="btn btn-outline-light btn-sm"
                    data-bs-toggle="tooltip"
