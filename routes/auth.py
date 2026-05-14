@@ -183,3 +183,12 @@ def user_profile(user_id):
         total_questions=total_questions,
         avg_percentage=avg_percentage,
     )
+
+
+@auth.route("/admin")
+@login_required
+def admin_panel():
+    if not current_user.is_admin:
+        abort(404)
+    users = User.query.order_by(User.created_at.desc()).all()
+    return render_template("auth/admin.html", users=users)

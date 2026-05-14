@@ -35,6 +35,14 @@
                    title="Sozlamalar">
                     <i class="bi bi-gear-fill"></i>
                 </a>
+                {% if current_user.is_admin %}
+                    <a href="{{ url_for("auth.admin_panel") }}"
+                       class="btn btn-outline-light btn-sm {% if request.endpoint == 'auth.admin_panel' %}active{% endif %}"
+                       data-bs-toggle="tooltip"
+                       title="Admin Panel">
+                        <i class="bi bi-shield-fill"></i>
+                    </a>
+                {% endif %}
                 <a href="{{ url_for("auth.logout") }}"
                    class="btn btn-outline-light btn-sm"
                    data-bs-toggle="tooltip"
