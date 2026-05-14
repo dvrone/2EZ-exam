@@ -149,6 +149,9 @@ def upload_questions(exam_id):
 
 
 def parse_questions(content):
+    # Windows \r\n va Mac \r ni ham qo'llab quvvatlash
+    content = content.replace("\r\n", "\n").replace("\r", "\n")
+
     questions = []
     blocks = content.strip().split("\n\n")
 
