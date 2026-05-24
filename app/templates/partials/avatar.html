@@ -1,0 +1,22 @@
+{% macro avatar(user, size=40) %}
+    {% if user.avatar_url %}
+        <img src="{{ user.avatar_url }}"
+             class="rounded-circle"
+             width="{{ size }}"
+             height="{{ size }}"
+             style="object-fit: cover;
+                    min-width: {{ size }}px"
+             onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="rounded-circle bg-primary d-none align-items-center justify-content-center text-white fw-bold"
+             style="width: {{ size }}px;
+                    height: {{ size }}px;
+                    min-width: {{ size }}px;
+                    font-size: {{ (size / 2.5)|int }}px">{{ user.username[0]|upper }}</div>
+    {% else %}
+        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
+             style="width: {{ size }}px;
+                    height: {{ size }}px;
+                    min-width: {{ size }}px;
+                    font-size: {{ (size / 2.5)|int }}px">{{ user.username[0]|upper }}</div>
+    {% endif %}
+{% endmacro %}

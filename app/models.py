@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    avatar_url = db.Column(db.String(500), nullable=True)
     xp = db.Column(db.Integer, default=0)
     bio = db.Column(db.String(300), nullable=True)
     github = db.Column(db.String(100), nullable=True)

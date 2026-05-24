@@ -141,12 +141,14 @@ def settings():
         telegram = request.form.get("telegram", "").strip()
         instagram = request.form.get("instagram", "").strip()
         website = request.form.get("website", "").strip()
+        avatar_url = request.form.get("avatar_url", "").strip()
 
         current_user.bio = bio or None
         current_user.github = github or None
         current_user.telegram = telegram or None
         current_user.instagram = instagram or None
         current_user.website = website or None
+        current_user.avatar_url = avatar_url or None
 
         db.session.commit()
         flash("Profil yangilandi!", "success")

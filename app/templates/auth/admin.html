@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'partials/avatar.html' import avatar %}
 {% block title %}Admin Panel{% endblock %}
 {% block content %}
     <!-- Header -->
@@ -67,11 +68,7 @@
                             <td class="text-muted small">{{ loop.index }}</td>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
-                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
-                                         style="width: 32px;
-                                                height: 32px;
-                                                min-width: 32px;
-                                                font-size: 0.85rem">{{ user.username[0]|upper }}</div>
+                                    {{ avatar(user, 32) }}
                                     <span class="fw-semibold">{{ user.username }}</span>
                                 </div>
                             </td>
