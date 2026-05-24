@@ -36,10 +36,12 @@ def list_exams():
 @admin_required
 def create_exam():
     if request.method == "POST":
+        question_count = request.form.get("question_count")
         exam = Exam(
             title=request.form.get("title"),
             description=request.form.get("description"),
             duration=int(request.form.get("duration", 30)),
+            question_count=int(question_count) if question_count else None,
         )
         db.session.add(exam)
         db.session.commit()
@@ -49,7 +51,6 @@ def create_exam():
     return render_template("exam/create.html")
 
 
-# Imtihonni tahrirlash
 @exam_bp.route("/exams/<int:exam_id>/edit", methods=["GET", "POST"])
 @login_required
 @admin_required
@@ -57,9 +58,11 @@ def edit_exam(exam_id):
     exam = Exam.query.get_or_404(exam_id)
 
     if request.method == "POST":
+        question_count = request.form.get("question_count")
         exam.title = request.form.get("title")
         exam.description = request.form.get("description")
         exam.duration = int(request.form.get("duration", 30))
+        exam.question_count = int(question_count) if question_count else None
         db.session.commit()
         flash("Imtihon yangilandi!", "success")
         return redirect(url_for("exam.exam_detail", exam_id=exam.id))
@@ -239,6 +242,11 @@ def start_exam(exam_id):
 
     questions = list(exam.questions)
     random.shuffle(questions)
+
+    # question_count belgilangan bo'lsa, shuncha savol ol
+    if exam.question_count and exam.question_count < len(questions):
+        questions = questions[:exam.question_count]
+
     return render_template("exam/take.html", exam=exam, questions=questions)
 
 

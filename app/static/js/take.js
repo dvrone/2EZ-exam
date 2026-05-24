@@ -3,6 +3,18 @@ const questions = JSON.parse(
 );
 
 questions.forEach((q) => {
+  // To'g'ri javob mavjudligini tekshirish
+  const correctOption = q.options.find((o) => o.value === q.correct);
+
+  // Faqat mavjud variantlarni qoldirish
+  q.options = q.options.filter((o) => o.text && o.text.trim() !== "");
+
+  // To'g'ri javob o'chirilib ketgan bo'lsa qaytarish
+  if (correctOption && !q.options.find((o) => o.value === q.correct)) {
+    q.options.push(correctOption);
+  }
+
+  // Aralashtirish
   q.options.sort(() => Math.random() - 0.5);
 });
 

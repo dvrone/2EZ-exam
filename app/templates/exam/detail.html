@@ -20,6 +20,9 @@
                     </span>
                     <span class="badge bg-light text-dark fs-6 border">
                         <i class="bi bi-question-circle"></i> {{ exam.questions|length }} savol
+                        {% if exam.question_count and exam.question_count < exam.questions|length %}
+                            <span class="text-primary">→ {{ exam.question_count }} ta</span>
+                        {% endif %}
                     </span>
                 </div>
                 {% if exam.questions %}
