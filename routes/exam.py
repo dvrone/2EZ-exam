@@ -133,13 +133,18 @@ def upload_questions(exam_id):
             return redirect(request.url)
 
         for q in questions:
+            options = q["options"]
+            # 4 tadan kam bo'lsa bo'sh string bilan to'ldirish
+            while len(options) < 4:
+                options.append("")
+
             question = Question(
                 exam_id=exam.id,
                 text=q["text"],
-                option_a=q["options"][0],
-                option_b=q["options"][1],
-                option_c=q["options"][2],
-                option_d=q["options"][3],
+                option_a=options[0],
+                option_b=options[1],
+                option_c=options[2],
+                option_d=options[3],
                 correct=q["correct"],
             )
             db.session.add(question)
@@ -152,14 +157,26 @@ def upload_questions(exam_id):
 
 
 def parse_questions(content):
-    # Windows \r\n va Mac \r ni ham qo'llab quvvatlash
     content = content.replace("\r\n", "\n").replace("\r", "\n")
 
     questions = []
-    blocks = content.strip().split("\n\n")
+    current_block = []
+    blocks = []
 
-    for block in blocks:
-        lines = [line.strip() for line in block.strip().split("\n") if line.strip()]
+    for line in content.split("\n"):
+        stripped = line.strip()
+        if stripped.startswith("?") and current_block:
+            blocks.append(current_block)
+            current_block = [stripped]
+        elif stripped:
+            current_block.append(stripped)
+
+    if current_block:
+        blocks.append(current_block)
+
+    letters = ["a", "b", "c", "d", "e", "f", "g", "h"]
+
+    for lines in blocks:
         if not lines or not lines[0].startswith("?"):
             continue
 
@@ -174,14 +191,20 @@ def parse_questions(content):
             else:
                 options.append(line.strip())
 
-        if len(options) != 4 or correct_index is None:
+        if len(options) < 2 or correct_index is None:
             continue
+
+        # 4 tadan kam bo'lsa bo'sh string bilan to'ldirish
+        while len(options) < 4:
+            options.append("")
+
+        correct_letter = letters[correct_index] if correct_index < len(letters) else "a"
 
         questions.append(
             {
                 "text": text,
                 "options": options,
-                "correct": ["a", "b", "c", "d"][correct_index],
+                "correct": correct_letter,
             }
         )
 
