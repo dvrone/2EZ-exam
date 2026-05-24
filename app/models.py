@@ -80,8 +80,12 @@ class Exam(db.Model):
     question_count = db.Column(db.Integer, nullable=True)  # None = hammasi
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
-    questions = db.relationship("Question", backref="exam", cascade="all, delete-orphan")
-    results = db.relationship("Result", back_populates="exam", cascade="all, delete-orphan")
+    questions = db.relationship(
+        "Question", backref="exam", cascade="all, delete-orphan"
+    )
+    results = db.relationship(
+        "Result", back_populates="exam", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<Exam {self.title}>"

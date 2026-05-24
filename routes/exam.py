@@ -245,7 +245,7 @@ def start_exam(exam_id):
 
     # question_count belgilangan bo'lsa, shuncha savol ol
     if exam.question_count and exam.question_count < len(questions):
-        questions = questions[:exam.question_count]
+        questions = questions[: exam.question_count]
 
     return render_template("exam/take.html", exam=exam, questions=questions)
 
@@ -255,10 +255,19 @@ def start_exam(exam_id):
 @login_required
 def submit_exam(exam_id):
     exam = Exam.query.get_or_404(exam_id)
+
     score = 0
-    total = len(exam.questions)
+    # Faqat formada kelgan savollarni hisoblash
+    answered_ids = [
+        int(key.split("_")[1])
+        for key in request.form.keys()
+        if key.startswith("question_")
+    ]
+    total = len(answered_ids)
 
     for question in exam.questions:
+        if question.id not in answered_ids:
+            continue
         user_answer = request.form.get(f"question_{question.id}")
         if user_answer and user_answer == question.correct:
             score += 1
@@ -273,9 +282,6 @@ def submit_exam(exam_id):
 
     # XP hisoblash
     percentage = round((score / total) * 100) if total > 0 else 0
-
-    xp_earned = total * 10  # har bir savol uchun 10 XP
-
     if percentage >= 70:
         xp_earned = total * 10
     elif percentage >= 50:
