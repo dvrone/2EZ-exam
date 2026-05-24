@@ -115,6 +115,18 @@ option D
 - 📂 Bulk question upload via `.txt`
 - 🔊 Sound effects and vibration feedback
 
+## Version
+
+Current version: **v0.6.0**
+
+### Changelog
+- **v0.6.0** — Avatar support, question count selection, bug fixes
+- **v0.5.0** — Admin panel, user profiles, bio, social links
+- **v0.4.0** — Vocab module (Flashcard, Quiz, TTS)
+- **v0.3.0** — Dark mode, XP system, Leaderboard, UI refactor
+- **v0.2.0** — Auth, Exam CRUD, Reference module
+- **v0.1.0** — Initial release
+
 ## License
 
 MIT
