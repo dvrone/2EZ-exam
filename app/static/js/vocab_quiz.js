@@ -5,9 +5,22 @@ const submitUrl = document
   .replace(/"/g, "");
 
 let questions = [];
+let total = 0;
 let current = 0;
-let score = 0;
-let answered = false;
+let furthest = 0;
+const answers = {}; // index -> selected option text
+
+const wordText = document.getElementById("wordText");
+const optionsContainer = document.getElementById("optionsContainer");
+const continueBtn = document.getElementById("continueBtn");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const reviewBadge = document.getElementById("reviewBadge");
+const progressBar = document.getElementById("progressBar");
+const currentNum = document.getElementById("currentNum");
+const totalNum = document.getElementById("totalNum");
+const navRow = document.getElementById("navRow");
+const questionCard = document.getElementById("questionCard");
 
 function speak(text) {
   try {
@@ -65,32 +78,41 @@ function buildQuestions() {
     const options = [...wrong, w.translation].sort(() => Math.random() - 0.5);
     return { word: w.word, correct: w.translation, options };
   });
-  document.getElementById("totalNum").textContent = questions.length;
+
+  total = questions.length;
+  totalNum.textContent = total;
 }
 
 function updateProgress() {
-  const percent = (current / questions.length) * 100;
-  document.getElementById("progressBar").style.width = percent + "%";
-  document.getElementById("currentNum").textContent = current + 1;
+  const answeredCount = Object.keys(answers).length;
+  const percent = (answeredCount / total) * 100;
+  progressBar.style.width = percent + "%";
+  currentNum.textContent = current + 1;
+}
+
+function updateNavButtons() {
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = !(current < furthest);
 }
 
 function renderQuestion() {
-  answered = false;
   const q = questions[current];
-  const card = document.getElementById("questionCard");
-  const continueBtn = document.getElementById("continueBtn");
 
-  card.classList.remove("slide-in");
-  void card.offsetWidth;
-  card.classList.add("slide-in");
+  questionCard.classList.remove("slide-in");
+  void questionCard.offsetWidth;
+  questionCard.classList.add("slide-in");
 
-  document.getElementById("wordText").textContent = q.word;
-  continueBtn.classList.add("d-none");
-  continueBtn.style.background = "#4a90d9";
-  continueBtn.style.borderColor = "#4a90d9";
+  wordText.textContent = q.word;
+  optionsContainer.innerHTML = "";
 
-  const container = document.getElementById("optionsContainer");
-  container.innerHTML = "";
+  const isAnswered = answers.hasOwnProperty(current);
+  const isReview = current < furthest || (current === furthest && isAnswered);
+
+  if (current < furthest) {
+    reviewBadge.classList.remove("d-none");
+  } else {
+    reviewBadge.classList.add("d-none");
+  }
 
   q.options.forEach((opt) => {
     const btn = document.createElement("button");
@@ -99,77 +121,114 @@ function renderQuestion() {
     btn.textContent = opt;
     btn.setAttribute("data-value", opt);
 
-    btn.onclick = () => {
-      if (answered) return;
-      answered = true;
+    if (isReview) {
+      btn.disabled = true;
+      btn.style.cursor = "default";
 
-      const isCorrect = opt === q.correct;
-
-      container.querySelectorAll("button").forEach((b) => {
-        b.disabled = true;
-        b.style.cursor = "default";
-      });
-
-      if (isCorrect) {
-        score++;
-        btn.classList.add("correct");
-        playSound("correct");
-        vibrate("correct");
-        continueBtn.style.background = "#58cc02";
-        continueBtn.style.borderColor = "#58cc02";
-      } else {
-        btn.classList.add("wrong");
-        playSound("wrong");
-        vibrate("wrong");
-        container.querySelectorAll("button").forEach((b) => {
-          if (b.getAttribute("data-value") === q.correct) {
-            b.classList.add("correct");
-          }
-        });
-        continueBtn.style.background = "#ff4b4b";
-        continueBtn.style.borderColor = "#ff4b4b";
+      if (isAnswered && answers[current] === opt) {
+        btn.classList.add(opt === q.correct ? "correct" : "wrong");
       }
+      if (opt === q.correct) {
+        btn.classList.add("correct");
+      }
+    } else {
+      btn.onclick = () => {
+        answers[current] = opt;
+        const isCorrect = opt === q.correct;
 
-      continueBtn.classList.remove("d-none");
-    };
+        if (isCorrect) {
+          playSound("correct");
+          vibrate("correct");
+        } else {
+          playSound("wrong");
+          vibrate("wrong");
+        }
 
-    container.appendChild(btn);
+        renderQuestion();
+        updateProgress();
+        updateNavButtons();
+      };
+    }
+
+    optionsContainer.appendChild(btn);
   });
 
-  updateProgress();
+  // Davom etish tugmasi
+  if (current === furthest && isAnswered) {
+    continueBtn.classList.remove("d-none");
+    const isCorrect = answers[current] === q.correct;
+
+    continueBtn.style.background = isCorrect ? "#58cc02" : "#ff4b4b";
+    continueBtn.style.borderColor = isCorrect ? "#58cc02" : "#ff4b4b";
+
+    continueBtn.innerHTML =
+      furthest === total - 1
+        ? 'Yakunlash <i class="bi bi-check-lg"></i>'
+        : 'Davom etish <i class="bi bi-arrow-right"></i>';
+  } else {
+    continueBtn.classList.add("d-none");
+  }
 }
 
-document.getElementById("continueBtn").onclick = () => {
-  try {
-    window.speechSynthesis.cancel();
-  } catch (e) {}
-  current++;
-  if (current >= questions.length) {
-    showResult();
-  } else {
+prevBtn.onclick = () => {
+  if (current > 0) {
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+    current--;
     renderQuestion();
+    updateProgress();
+    updateNavButtons();
+  }
+};
+
+nextBtn.onclick = () => {
+  if (current < furthest) {
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+    current++;
+    renderQuestion();
+    updateProgress();
+    updateNavButtons();
+  }
+};
+
+continueBtn.onclick = () => {
+  try { window.speechSynthesis.cancel(); } catch (e) {}
+
+  if (furthest < total - 1) {
+    furthest++;
+    current = furthest;
+    renderQuestion();
+    updateProgress();
+    updateNavButtons();
+  } else {
+    showResult();
   }
 };
 
 async function showResult() {
-  document.getElementById("questionCard").classList.add("d-none");
-  document.getElementById("continueBtn").classList.add("d-none");
-  document.getElementById("progressBar").style.width = "100%";
+  let score = 0;
+  questions.forEach((q, i) => {
+    if (answers[i] === q.correct) score++;
+  });
 
-  const percentage = Math.round((score / questions.length) * 100);
+  questionCard.classList.add("d-none");
+  continueBtn.classList.add("d-none");
+  navRow.classList.add("d-none");
+  reviewBadge.classList.add("d-none");
+  progressBar.style.width = "100%";
+
+  const percentage = Math.round((score / total) * 100);
   document.getElementById("scoreText").textContent =
-    `${score} / ${questions.length} to'g'ri javob`;
+    `${score} / ${total} to'g'ri javob`;
 
   try {
     const res = await fetch(submitUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ score, total: questions.length }),
+      body: JSON.stringify({ score, total }),
     });
     const data = await res.json();
     if (data.xp) {
-      document.getElementById("xpEarned").textContent =
-        `+${data.xp} XP qo'shildi!`;
+      document.getElementById("xpEarned").textContent = `+${data.xp} XP qo'shildi!`;
       document.getElementById("xpInfo").classList.remove("d-none");
     }
   } catch (e) {}
@@ -179,9 +238,9 @@ async function showResult() {
     curr = Math.min(curr + 2, percentage);
     document.getElementById("percentText").textContent = curr + "%";
     const dasharray = (curr / 100) * 439.8;
-    document
-      .getElementById("resultCircle")
-      .setAttribute("stroke-dasharray", `${dasharray} 439.8`);
+    document.getElementById("resultCircle").setAttribute(
+      "stroke-dasharray", `${dasharray} 439.8`
+    );
     const color =
       percentage >= 70 ? "#58cc02" : percentage >= 50 ? "#ffc800" : "#ff4b4b";
     document.getElementById("resultCircle").setAttribute("stroke", color);
@@ -217,25 +276,34 @@ async function showResult() {
 
 function restartQuiz() {
   current = 0;
-  score = 0;
-  answered = false;
-  document.getElementById("questionCard").classList.remove("d-none");
+  furthest = 0;
+  Object.keys(answers).forEach((k) => delete answers[k]);
+
+  questionCard.classList.remove("d-none");
+  navRow.classList.remove("d-none");
   document.getElementById("resultDiv").classList.add("d-none");
   document.getElementById("xpInfo").classList.add("d-none");
-  document.getElementById("progressBar").style.width = "0%";
+  progressBar.style.width = "0%";
+
   buildQuestions();
   renderQuestion();
+  updateProgress();
+  updateNavButtons();
 }
 
+// Klaviatura
 document.addEventListener("keydown", (e) => {
   if (e.key === " " || e.key === "Enter") {
     e.preventDefault();
-    const continueBtn = document.getElementById("continueBtn");
-    if (!continueBtn.classList.contains("d-none")) {
-      continueBtn.click();
-    }
+    if (!continueBtn.classList.contains("d-none")) continueBtn.click();
+  } else if (e.key === "ArrowLeft") {
+    if (!prevBtn.disabled) prevBtn.click();
+  } else if (e.key === "ArrowRight") {
+    if (!nextBtn.disabled) nextBtn.click();
   }
 });
 
 buildQuestions();
 renderQuestion();
+updateProgress();
+updateNavButtons();
