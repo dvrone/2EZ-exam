@@ -2,8 +2,8 @@
 {% block title %}{{ exam.title }}{% endblock %}
 {% block content %}
 
-<!-- Savollar va timer ma'lumotlari -->
-<script id="questionsData" type="application/json">
+  <!-- Savollar va timer ma'lumotlari -->
+  <script id="questionsData" type="application/json">
   [
     {% for q in questions %}
     {
@@ -19,70 +19,70 @@
     }{% if not loop.last %},{% endif %}
     {% endfor %}
   ]
-</script>
-<script id="timerData" type="application/json">{{ exam.duration }}</script>
+  </script>
+  <script id="timerData" type="application/json">{{ exam.duration }}</script>
 
-<div class="row justify-content-center">
-  <div class="col-md-7">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
 
-    <!-- Top bar -->
-    <div class="d-flex align-items-center gap-3 mb-3">
-      <a href="{{ url_for('exam.list_exams') }}"
-         class="text-muted text-decoration-none fs-5">
-        <i class="bi bi-x-lg"></i>
-      </a>
-      <div class="progress flex-grow-1" style="height: 12px; border-radius: 10px;">
-        <div class="progress-bar progress-bar-custom"
-             id="progressBar" style="width: 0%;"></div>
+      <!-- Top bar -->
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <a href="{{ url_for("exam.list_exams") }}"
+           class="text-muted text-decoration-none fs-5">
+          <i class="bi bi-x-lg"></i>
+        </a>
+        <div class="progress flex-grow-1" style="height: 12px; border-radius: 10px;">
+          <div class="progress-bar progress-bar-custom" id="progressBar" style="width: 0%;"></div>
+        </div>
+        <span class="badge bg-warning text-dark fs-6">
+          <i class="bi bi-clock"></i> <span id="timer">{{ exam.duration }}:00</span>
+        </span>
       </div>
-      <span class="badge bg-warning text-dark fs-6">
-        <i class="bi bi-clock"></i> <span id="timer">{{ exam.duration }}:00</span>
-      </span>
-    </div>
 
-    <!-- Navigation -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <button id="prevBtn" class="btn btn-outline-secondary btn-sm" disabled>
-        <i class="bi bi-chevron-left"></i> Oldingi
+      <!-- Navigation -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <button id="prevBtn" class="btn btn-outline-secondary btn-sm" disabled>
+          <i class="bi bi-chevron-left"></i> Oldingi
+        </button>
+        <span class="text-muted small">
+          Savol <span id="currentNum">1</span> / {{ questions | length }}
+        </span>
+        <button id="nextBtn" class="btn btn-outline-secondary btn-sm" disabled>
+          Keyingi <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- Savol kartasi -->
+      <div id="questionCard"
+           class="card border-0 shadow-sm p-4 mb-4"
+           style="min-height: 300px">
+        <div id="questionText" class="fw-bold mb-4" style="font-size: 1.2rem;"></div>
+        <div id="optionsContainer" class="d-flex flex-column gap-3"></div>
+      </div>
+
+      <!-- Davom etish tugmasi -->
+      <button id="continueBtn"
+              class="btn btn-primary w-100 py-3 fw-bold d-none"
+              style="border-radius: 14px;
+                     font-size: 1.1rem">
+        Davom etish <i class="bi bi-arrow-right"></i>
       </button>
-      <span class="text-muted small">
-        Savol <span id="currentNum">1</span> / {{ questions | length }}
-      </span>
-      <button id="nextBtn" class="btn btn-outline-secondary btn-sm" disabled>
-        Keyingi <i class="bi bi-chevron-right"></i>
-      </button>
+
+      <!-- Review rejimi xabari -->
+      <div id="reviewBadge" class="alert alert-secondary text-center fw-semibold d-none">
+        <i class="bi bi-eye"></i> Ko'rib chiqish rejimi — javob o'zgartirib bo'lmaydi
+      </div>
+
     </div>
-
-    <!-- Savol kartasi -->
-    <div id="questionCard" class="card border-0 shadow-sm p-4 mb-4"
-         style="min-height: 300px;">
-      <div id="questionText" class="fw-bold mb-4" style="font-size: 1.2rem;"></div>
-      <div id="optionsContainer" class="d-flex flex-column gap-3"></div>
-    </div>
-
-    <!-- Davom etish tugmasi -->
-    <button id="continueBtn"
-            class="btn btn-primary w-100 py-3 fw-bold d-none"
-            style="border-radius: 14px; font-size: 1.1rem;">
-      Davom etish <i class="bi bi-arrow-right"></i>
-    </button>
-
-    <!-- Review rejimi xabari -->
-    <div id="reviewBadge"
-         class="alert alert-secondary text-center fw-semibold d-none">
-      <i class="bi bi-eye"></i> Ko'rib chiqish rejimi — javob o'zgartirib bo'lmaydi
-    </div>
-
   </div>
-</div>
 
-<!-- Yakunlash formasi -->
-<form id="submitForm" method="POST"
-      action="{{ url_for('exam.submit_exam', exam_id=exam.id) }}"></form>
+  <!-- Yakunlash formasi -->
+  <form id="submitForm"
+        method="POST"
+        action="{{ url_for('exam.submit_exam', exam_id=exam.id) }}">
+  </form>
 
-<div class="mb-5"></div>
+  <div class="mb-5"></div>
 {% endblock %}
 
-{% block scripts %}
-  <script src="{{ url_for('static', filename='js/take.js') }}"></script>
-{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/take.js') }}"></script>{% endblock %}

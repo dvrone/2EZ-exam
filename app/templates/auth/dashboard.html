@@ -1,264 +1,264 @@
 {% extends 'base.html' %}
 {% block title %}Bosh sahifa{% endblock %}
 {% block content %}
-    <!-- Header -->
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="mb-0">
-            <span id="greeting"></span>, {{ current_user.username }}!
-        </h3>
+  <!-- Header -->
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">
+      <span id="greeting"></span>, {{ current_user.username }}!
+    </h3>
+  </div>
+  <!-- XP widget -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <span class="fw-bold fs-5">
+            <i class="bi bi-lightning-charge-fill text-warning"></i>
+            {{ current_user.xp }} XP
+          </span>
+          <span class="badge bg-secondary ms-2">{{ current_user.level_name }}</span>
+          <small class="text-muted ms-1">Daraja {{ current_user.level }}</small>
+        </div>
+        <span class="badge bg-light text-dark border">
+          <i class="bi bi-graph-up text-success"></i>
+          {{ current_user.xp_progress }}% to'ldi
+        </span>
+      </div>
+      <div class="progress" style="height: 12px;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+             role="progressbar"
+             style="width: {{ current_user.xp_progress }}%">{{ current_user.xp_progress }}%</div>
+      </div>
+      <div class="d-flex justify-content-between mt-2">
+        <small class="text-muted">
+          <i class="bi bi-arrow-up-circle-fill text-success"></i> Daraja {{ current_user.level }}
+        </small>
+        <small class="text-muted">
+          {% if current_user.level < 5 %}
+            Daraja {{ current_user.level + 1 }}
+            <i class="bi bi-arrow-right-circle text-primary"></i>
+          {% else %}
+            <span class="text-warning fw-bold">
+              <i class="bi bi-star-fill"></i> MAX
+            </span>
+          {% endif %}
+        </small>
+      </div>
     </div>
-    <!-- XP widget -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <span class="fw-bold fs-5">
-                        <i class="bi bi-lightning-charge-fill text-warning"></i>
-                        {{ current_user.xp }} XP
-                    </span>
-                    <span class="badge bg-secondary ms-2">{{ current_user.level_name }}</span>
-                    <small class="text-muted ms-1">Daraja {{ current_user.level }}</small>
-                </div>
-                <span class="badge bg-light text-dark border">
-                    <i class="bi bi-graph-up text-success"></i>
-                    {{ current_user.xp_progress }}% to'ldi
-                </span>
-            </div>
-            <div class="progress" style="height: 12px;">
-                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
-                     role="progressbar"
-                     style="width: {{ current_user.xp_progress }}%">{{ current_user.xp_progress }}%</div>
-            </div>
-            <div class="d-flex justify-content-between mt-2">
-                <small class="text-muted">
-                    <i class="bi bi-arrow-up-circle-fill text-success"></i> Daraja {{ current_user.level }}
-                </small>
-                <small class="text-muted">
-                    {% if current_user.level < 5 %}
-                        Daraja {{ current_user.level + 1 }}
-                        <i class="bi bi-arrow-right-circle text-primary"></i>
-                    {% else %}
-                        <span class="text-warning fw-bold">
-                            <i class="bi bi-star-fill"></i> MAX
-                        </span>
-                    {% endif %}
-                </small>
-            </div>
+  </div>
+  <!-- Tezkor statistikalar -->
+  <div class="row g-3 mb-4">
+    <div class="col-4">
+      <div class="card border-0 shadow-sm text-center">
+        <div class="card-body py-3">
+          <i class="bi bi-check-circle-fill text-success fs-4"></i>
+          <h6 class="mb-0 mt-2">{{ results|length }}</h6>
+          <small class="text-muted">Testlar</small>
         </div>
+      </div>
     </div>
-    <!-- Tezkor statistikalar -->
-    <div class="row g-3 mb-4">
-        <div class="col-4">
-            <div class="card border-0 shadow-sm text-center">
-                <div class="card-body py-3">
-                    <i class="bi bi-check-circle-fill text-success fs-4"></i>
-                    <h6 class="mb-0 mt-2">{{ results|length }}</h6>
-                    <small class="text-muted">Testlar</small>
-                </div>
-            </div>
+    <div class="col-4">
+      <div class="card border-0 shadow-sm text-center">
+        <div class="card-body py-3">
+          <i class="bi bi-bar-chart-fill text-primary fs-4"></i>
+          <h6 class="mb-0 mt-2">
+            {% if results %}
+              {{ (results|sum(attribute='score') / results|sum(attribute='total') * 100)|round|int }}%
+            {% else %}
+              0%
+            {% endif %}
+          </h6>
+          <small class="text-muted">O'rtacha</small>
         </div>
-        <div class="col-4">
-            <div class="card border-0 shadow-sm text-center">
-                <div class="card-body py-3">
-                    <i class="bi bi-bar-chart-fill text-primary fs-4"></i>
-                    <h6 class="mb-0 mt-2">
-                        {% if results %}
-                            {{ (results|sum(attribute='score') / results|sum(attribute='total') * 100)|round|int }}%
-                        {% else %}
-                            0%
-                        {% endif %}
-                    </h6>
-                    <small class="text-muted">O'rtacha</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="card border-0 shadow-sm text-center">
-                <div class="card-body py-3">
-                    <i class="bi bi-lightning-charge-fill text-warning fs-4"></i>
-                    <h6 class="mb-0 mt-2">{{ current_user.xp }}</h6>
-                    <small class="text-muted">XP</small>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-    <!-- Bo'limlar -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm h-100 position-relative">
-                <div class="card-body text-center p-4">
-                    <div class="mb-3">
-                        <i class="bi bi-pencil-square text-primary" style="font-size: 3rem;"></i>
-                    </div>
-                    <h5 class="fw-bold mb-1">Test Topshirish</h5>
-                    <p class="text-muted small mb-3">Bilimingizni sinab ko'ring</p>
-                    <span class="badge bg-primary rounded-pill px-3 py-2 mb-3">
-                        <i class="bi bi-journal-check"></i> {{ exams|length }} ta imtihon
-                    </span>
-                    <div>
-                        <a href="{{ url_for("exam.list_exams") }}"
-                           class="stretched-link text-primary text-decoration-none small fw-bold">
-                            <i class="bi bi-arrow-right-circle-fill"></i> Boshlash
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <div class="col-4">
+      <div class="card border-0 shadow-sm text-center">
+        <div class="card-body py-3">
+          <i class="bi bi-lightning-charge-fill text-warning fs-4"></i>
+          <h6 class="mb-0 mt-2">{{ current_user.xp }}</h6>
+          <small class="text-muted">XP</small>
         </div>
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm h-100 position-relative">
-                <div class="card-body text-center p-4">
-                    <div class="mb-3">
-                        <i class="bi bi-book-fill text-success" style="font-size: 3rem;"></i>
-                    </div>
-                    <h5 class="fw-bold mb-1">Ma'lumotnoma</h5>
-                    <p class="text-muted small mb-3">Mavzularni o'rganing</p>
-                    <span class="badge bg-success rounded-pill px-3 py-2 mb-3">
-                        <i class="bi bi-book"></i> O'rganish
-                    </span>
-                    <div>
-                        <a href="{{ url_for("reference.list_reference") }}"
-                           class="stretched-link text-success text-decoration-none small fw-bold">
-                            <i class="bi bi-arrow-right-circle-fill"></i> Ko'rish
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <a href="{{ url_for("vocab.list_sets") }}" class="text-decoration-none">
-                <div class="card border-0 shadow-sm h-100 position-relative">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3">
-                            <i class="bi bi-translate text-warning" style="font-size: 3rem;"></i>
-                        </div>
-                        <h5 class="fw-bold mb-1">Vocab</h5>
-                        <p class="text-muted small mb-3">So'z boyligingizni oshiring</p>
-                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2 mb-3">
-                            <i class="bi bi-translate"></i> So'z o'rganish
-                        </span>
-                        <div>
-                            <span class="stretched-link text-warning text-decoration-none small fw-bold">
-                                <i class="bi bi-arrow-right-circle-fill"></i> Boshlash
-                            </span>
-                        </div>
-                    </div>
-                </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bo'limlar -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100 position-relative">
+        <div class="card-body text-center p-4">
+          <div class="mb-3">
+            <i class="bi bi-pencil-square text-primary" style="font-size: 3rem;"></i>
+          </div>
+          <h5 class="fw-bold mb-1">Test Topshirish</h5>
+          <p class="text-muted small mb-3">Bilimingizni sinab ko'ring</p>
+          <span class="badge bg-primary rounded-pill px-3 py-2 mb-3">
+            <i class="bi bi-journal-check"></i> {{ exams|length }} ta imtihon
+          </span>
+          <div>
+            <a href="{{ url_for("exam.list_exams") }}"
+               class="stretched-link text-primary text-decoration-none small fw-bold">
+              <i class="bi bi-arrow-right-circle-fill"></i> Boshlash
             </a>
+          </div>
         </div>
+      </div>
     </div>
-    <!-- So'nggi natijalar -->
-    <h5 class="mb-3">
-        <i class="bi bi-clock-history text-primary"></i> So'nggi natijalar
-    </h5>
-    {% if results %}
-        <!-- Desktop -->
-        <div class="card border-0 shadow-sm d-none d-md-block mb-4">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="text-center text-muted fw-normal" style="width: 50px;">#</th>
-                            <th>Imtihon</th>
-                            <th class="text-center">Ball</th>
-                            <th>Natija</th>
-                            <th class="text-center">XP</th>
-                            <th>Sana</th>
-                            <th class="text-end">Amal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for result in results %}
-                            {% set percentage = (result.score / result.total * 100)|round|int %}
-                            {% set xp_gained = result.total * 10 if percentage >= 70 else result.total * 5 if percentage >= 50 else result.total * 2 %}
-                            <tr>
-                                <td class="text-center text-muted small">{{ loop.index }}</td>
-                                <td class="fw-semibold">{{ result.exam.title }}</td>
-                                <td class="text-center">
-                                    <span class="fw-bold">{{ result.score }}</span>
-                                    <small class="text-muted">/ {{ result.total }}</small>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="progress flex-grow-1" style="height: 6px; min-width: 60px;">
-                                            <div class="progress-bar {% if percentage >= 70 %}bg-success {% elif percentage >= 50 %}bg-warning {% else %}bg-danger{% endif %}"
-                                                 style="width: {{ percentage }}%"></div>
-                                        </div>
-                                        <span class="badge {% if percentage >= 70 %}bg-success {% elif percentage >= 50 %}bg-warning text-dark {% else %}bg-danger{% endif %}">
-                                            {{ percentage }}%
-                                        </span>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge bg-warning text-dark">
-                                        <i class="bi bi-lightning-charge-fill"></i> +{{ xp_gained }} XP
-                                    </span>
-                                </td>
-                                <td class="text-muted small">{{ result.finished_at.strftime("%d.%m.%Y %H:%M") }}</td>
-                                <td class="text-end">
-                                    <a href="{{ url_for('exam.exam_result', result_id=result.id) }}"
-                                       class="btn btn-outline-secondary btn-sm">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100 position-relative">
+        <div class="card-body text-center p-4">
+          <div class="mb-3">
+            <i class="bi bi-book-fill text-success" style="font-size: 3rem;"></i>
+          </div>
+          <h5 class="fw-bold mb-1">Ma'lumotnoma</h5>
+          <p class="text-muted small mb-3">Mavzularni o'rganing</p>
+          <span class="badge bg-success rounded-pill px-3 py-2 mb-3">
+            <i class="bi bi-book"></i> O'rganish
+          </span>
+          <div>
+            <a href="{{ url_for("reference.list_reference") }}"
+               class="stretched-link text-success text-decoration-none small fw-bold">
+              <i class="bi bi-arrow-right-circle-fill"></i> Ko'rish
+            </a>
+          </div>
         </div>
-        <!-- Mobil -->
-        <div class="d-md-none mb-4">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <a href="{{ url_for("vocab.list_sets") }}" class="text-decoration-none">
+        <div class="card border-0 shadow-sm h-100 position-relative">
+          <div class="card-body text-center p-4">
+            <div class="mb-3">
+              <i class="bi bi-translate text-warning" style="font-size: 3rem;"></i>
+            </div>
+            <h5 class="fw-bold mb-1">Vocab</h5>
+            <p class="text-muted small mb-3">So'z boyligingizni oshiring</p>
+            <span class="badge bg-warning text-dark rounded-pill px-3 py-2 mb-3">
+              <i class="bi bi-translate"></i> So'z o'rganish
+            </span>
+            <div>
+              <span class="stretched-link text-warning text-decoration-none small fw-bold">
+                <i class="bi bi-arrow-right-circle-fill"></i> Boshlash
+              </span>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <!-- So'nggi natijalar -->
+  <h5 class="mb-3">
+    <i class="bi bi-clock-history text-primary"></i> So'nggi natijalar
+  </h5>
+  {% if results %}
+    <!-- Desktop -->
+    <div class="card border-0 shadow-sm d-none d-md-block mb-4">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="text-center text-muted fw-normal" style="width: 50px;">#</th>
+              <th>Imtihon</th>
+              <th class="text-center">Ball</th>
+              <th>Natija</th>
+              <th class="text-center">XP</th>
+              <th>Sana</th>
+              <th class="text-end">Amal</th>
+            </tr>
+          </thead>
+          <tbody>
             {% for result in results %}
-                {% set percentage = (result.score / result.total * 100)|round|int %}
-                {% set xp_gained = result.total * 10 if percentage >= 70 else result.total * 5 if percentage >= 50 else result.total * 2 %}
-                <div class="card border-0 shadow-sm mb-3">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div>
-                                <h6 class="fw-bold mb-1">{{ result.exam.title }}</h6>
-                                <small class="text-muted">
-                                    <i class="bi bi-calendar3"></i>
-                                    {{ result.finished_at.strftime("%d.%m.%Y %H:%M") }}
-                                </small>
-                            </div>
-                            <span class="badge {% if percentage >= 70 %}bg-success {% elif percentage >= 50 %}bg-warning text-dark {% else %}bg-danger{% endif %} fs-6">
-                                {{ percentage }}%
-                            </span>
-                        </div>
-                        <div class="progress mb-3" style="height: 8px;">
-                            <div class="progress-bar {% if percentage >= 70 %}bg-success {% elif percentage >= 50 %}bg-warning {% else %}bg-danger{% endif %}"
-                                 style="width: {{ percentage }}%"></div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="fw-bold">{{ result.score }}</span>
-                                <small class="text-muted">/ {{ result.total }}</small>
-                                <span class="badge bg-warning text-dark ms-2">
-                                    <i class="bi bi-lightning-charge-fill"></i> +{{ xp_gained }} XP
-                                </span>
-                            </div>
-                            <a href="{{ url_for('exam.exam_result', result_id=result.id) }}"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                        </div>
+              {% set percentage = (result.score / result.total * 100)|round|int %}
+              {% set xp_gained = result.total * 10 if percentage >= 70 else result.total * 5 if percentage >= 50 else result.total * 2 %}
+              <tr>
+                <td class="text-center text-muted small">{{ loop.index }}</td>
+                <td class="fw-semibold">{{ result.exam.title }}</td>
+                <td class="text-center">
+                  <span class="fw-bold">{{ result.score }}</span>
+                  <small class="text-muted">/ {{ result.total }}</small>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="progress flex-grow-1" style="height: 6px; min-width: 60px;">
+                      <div class="progress-bar {% if percentage >= 70 %}bg-success {% elif percentage >= 50 %}bg-warning {% else %}bg-danger{% endif %}"
+                           style="width: {{ percentage }}%"></div>
                     </div>
-                </div>
+                    <span class="badge {% if percentage >= 70 %}bg-success {% elif percentage >= 50 %}bg-warning text-dark {% else %}bg-danger{% endif %}">
+                      {{ percentage }}%
+                    </span>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-warning text-dark">
+                    <i class="bi bi-lightning-charge-fill"></i> +{{ xp_gained }} XP
+                  </span>
+                </td>
+                <td class="text-muted small">{{ result.finished_at.strftime("%d.%m.%Y %H:%M") }}</td>
+                <td class="text-end">
+                  <a href="{{ url_for('exam.exam_result', result_id=result.id) }}"
+                     class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                </td>
+              </tr>
             {% endfor %}
-        </div>
-    {% else %}
-        <div class="card border-0 shadow-sm">
-            <div class="card-body text-center py-5">
-                <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
-                <h5 class="text-muted mt-3">Hali birorta test ishlamadingiz</h5>
-                <p class="text-muted small mb-4">Bilimingizni sinash va XP yig'ish uchun test topshiring</p>
-                <a href="{{ url_for("exam.list_exams") }}"
-                   class="btn btn-primary btn-lg px-5 shadow-sm">
-                    <i class="bi bi-play-fill"></i> Testni boshlash
-                </a>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Mobil -->
+    <div class="d-md-none mb-4">
+      {% for result in results %}
+        {% set percentage = (result.score / result.total * 100)|round|int %}
+        {% set xp_gained = result.total * 10 if percentage >= 70 else result.total * 5 if percentage >= 50 else result.total * 2 %}
+        <div class="card border-0 shadow-sm mb-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="fw-bold mb-1">{{ result.exam.title }}</h6>
+                <small class="text-muted">
+                  <i class="bi bi-calendar3"></i>
+                  {{ result.finished_at.strftime("%d.%m.%Y %H:%M") }}
+                </small>
+              </div>
+              <span class="badge {% if percentage >= 70 %}bg-success {% elif percentage >= 50 %}bg-warning text-dark {% else %}bg-danger{% endif %} fs-6">
+                {{ percentage }}%
+              </span>
             </div>
+            <div class="progress mb-3" style="height: 8px;">
+              <div class="progress-bar {% if percentage >= 70 %}bg-success {% elif percentage >= 50 %}bg-warning {% else %}bg-danger{% endif %}"
+                   style="width: {{ percentage }}%"></div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <span class="fw-bold">{{ result.score }}</span>
+                <small class="text-muted">/ {{ result.total }}</small>
+                <span class="badge bg-warning text-dark ms-2">
+                  <i class="bi bi-lightning-charge-fill"></i> +{{ xp_gained }} XP
+                </span>
+              </div>
+              <a href="{{ url_for('exam.exam_result', result_id=result.id) }}"
+                 class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-eye"></i>
+              </a>
+            </div>
+          </div>
         </div>
-    {% endif %}
-    <div class="mb-5"></div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center py-5">
+        <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+        <h5 class="text-muted mt-3">Hali birorta test ishlamadingiz</h5>
+        <p class="text-muted small mb-4">Bilimingizni sinash va XP yig'ish uchun test topshiring</p>
+        <a href="{{ url_for("exam.list_exams") }}"
+           class="btn btn-primary btn-lg px-5 shadow-sm">
+          <i class="bi bi-play-fill"></i> Testni boshlash
+        </a>
+      </div>
+    </div>
+  {% endif %}
+  <div class="mb-5"></div>
 {% endblock %}

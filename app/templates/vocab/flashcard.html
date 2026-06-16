@@ -2,7 +2,7 @@
 {% block title %}Flashcard — {{ vocab_set.title }}{% endblock %}
 {% block content %}
 
-<script id="wordsData" type="application/json">
+  <script id="wordsData" type="application/json">
   [
     {% for word in words %}
     {
@@ -13,97 +13,95 @@
     }{% if not loop.last %},{% endif %}
     {% endfor %}
   ]
-</script>
+  </script>
 
-<div class="row justify-content-center">
-  <div class="col-md-6">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
 
-    <!-- Top bar -->
-    <div class="d-flex align-items-center gap-3 mb-4">
-      <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
-         class="text-muted text-decoration-none fs-5">
-        <i class="bi bi-x-lg"></i>
-      </a>
-      <div class="progress flex-grow-1" style="height: 12px; border-radius: 10px;">
-        <div class="progress-bar progress-bar-custom"
-             id="progressBar" style="width: 0%;"></div>
-      </div>
-      <span class="text-muted small">
-        <span id="currentNum">1</span> / {{ words|length }}
-      </span>
-    </div>
-
-    <!-- Karta -->
-    <div id="flashcard"
-         class="card border-0 shadow-sm p-5 text-center mb-4"
-         style="min-height: 280px; cursor: pointer; transition: all 0.3s ease;"
-         onclick="flipCard()">
-
-      <!-- Front -->
-      <div id="cardFront">
-        <p class="text-muted small mb-3">
-          <i class="bi bi-hand-index-thumb"></i> Kartani bosib tarjimani ko'ring
-        </p>
-        <h2 class="fw-bold" id="wordText"></h2>
-        <button onclick="event.stopPropagation(); speak(document.getElementById('wordText').textContent)"
-                class="btn btn-outline-primary btn-sm mt-3">
-          <i class="bi bi-volume-up-fill"></i> Tinglash
-        </button>
+      <!-- Top bar -->
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
+           class="text-muted text-decoration-none fs-5">
+          <i class="bi bi-x-lg"></i>
+        </a>
+        <div class="progress flex-grow-1" style="height: 12px; border-radius: 10px;">
+          <div class="progress-bar progress-bar-custom" id="progressBar" style="width: 0%;"></div>
+        </div>
+        <span class="text-muted small">
+          <span id="currentNum">1</span> / {{ words|length }}
+        </span>
       </div>
 
-      <!-- Back -->
-      <div id="cardBack" style="display: none;">
-        <p class="text-muted small mb-3">Tarjima</p>
-        <h2 class="fw-bold text-primary" id="translationText"></h2>
-        <p class="text-muted fst-italic mt-3 small" id="exampleText"></p>
-      </div>
+      <!-- Karta -->
+      <div id="flashcard"
+           class="card border-0 shadow-sm p-5 text-center mb-4"
+           style="min-height: 280px;
+                  cursor: pointer;
+                  transition: all 0.3s ease"
+           onclick="flipCard()">
 
-    </div>
-
-    <!-- Tugmalar -->
-    <div id="actionBtns" class="d-none">
-      <div class="d-flex gap-3">
-        <button onclick="nextWord(false)"
-                class="btn btn-outline-danger w-100 py-3 fw-bold"
-                style="border-radius: 14px;">
-          <i class="bi bi-x-lg"></i> Bilmadim
-        </button>
-        <button onclick="nextWord(true)"
-                class="btn btn-success w-100 py-3 fw-bold"
-                style="border-radius: 14px;">
-          <i class="bi bi-check-lg"></i> Bildim
-        </button>
-      </div>
-    </div>
-
-    <!-- Natija -->
-    <div id="resultDiv" class="d-none text-center">
-      <div class="card border-0 shadow-sm p-5">
-        <i class="bi bi-trophy-fill text-warning" style="font-size: 4rem;"></i>
-        <h3 class="fw-bold mt-3">Bajarildi!</h3>
-        <p class="text-muted">
-          <span class="text-success fw-bold" id="knownCount">0</span> ta bildim /
-          <span class="text-danger fw-bold" id="unknownCount">0</span> ta bilmadim
-        </p>
-        <div class="d-flex gap-3 mt-3">
-          <button onclick="restartFlashcard()"
-                  class="btn btn-primary w-100 py-2 fw-bold">
-            <i class="bi bi-arrow-repeat"></i> Qayta
+        <!-- Front -->
+        <div id="cardFront">
+          <p class="text-muted small mb-3">
+            <i class="bi bi-hand-index-thumb"></i> Kartani bosib tarjimani ko'ring
+          </p>
+          <h2 class="fw-bold" id="wordText"></h2>
+          <button onclick="event.stopPropagation(); speak(document.getElementById('wordText').textContent)"
+                  class="btn btn-outline-primary btn-sm mt-3">
+            <i class="bi bi-volume-up-fill"></i> Tinglash
           </button>
-          <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
-             class="btn btn-outline-secondary w-100 py-2 fw-bold">
-            <i class="bi bi-arrow-left"></i> Orqaga
-          </a>
+        </div>
+
+        <!-- Back -->
+        <div id="cardBack" style="display: none;">
+          <p class="text-muted small mb-3">Tarjima</p>
+          <h2 class="fw-bold text-primary" id="translationText"></h2>
+          <p class="text-muted fst-italic mt-3 small" id="exampleText"></p>
+        </div>
+
+      </div>
+
+      <!-- Tugmalar -->
+      <div id="actionBtns" class="d-none">
+        <div class="d-flex gap-3">
+          <button onclick="nextWord(false)"
+                  class="btn btn-outline-danger w-100 py-3 fw-bold"
+                  style="border-radius: 14px">
+            <i class="bi bi-x-lg"></i> Bilmadim
+          </button>
+          <button onclick="nextWord(true)"
+                  class="btn btn-success w-100 py-3 fw-bold"
+                  style="border-radius: 14px">
+            <i class="bi bi-check-lg"></i> Bildim
+          </button>
         </div>
       </div>
+
+      <!-- Natija -->
+      <div id="resultDiv" class="d-none text-center">
+        <div class="card border-0 shadow-sm p-5">
+          <i class="bi bi-trophy-fill text-warning" style="font-size: 4rem;"></i>
+          <h3 class="fw-bold mt-3">Bajarildi!</h3>
+          <p class="text-muted">
+            <span class="text-success fw-bold" id="knownCount">0</span> ta bildim /
+            <span class="text-danger fw-bold" id="unknownCount">0</span> ta bilmadim
+          </p>
+          <div class="d-flex gap-3 mt-3">
+            <button onclick="restartFlashcard()" class="btn btn-primary w-100 py-2 fw-bold">
+              <i class="bi bi-arrow-repeat"></i> Qayta
+            </button>
+            <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
+               class="btn btn-outline-secondary w-100 py-2 fw-bold">
+              <i class="bi bi-arrow-left"></i> Orqaga
+            </a>
+          </div>
+        </div>
+      </div>
+
     </div>
-
   </div>
-</div>
 
-<div class="mb-5"></div>
+  <div class="mb-5"></div>
 {% endblock %}
 
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/flashcard.js') }}"></script>
-{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/flashcard.js') }}"></script>{% endblock %}
