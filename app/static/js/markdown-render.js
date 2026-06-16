@@ -7,6 +7,7 @@
 function applyRendering(container) {
   try {
     if (window.hljs) {
+      // Faqat pre ichidagi code highlight bo'lsin
       container.querySelectorAll("pre code").forEach((block) => {
         hljs.highlightElement(block);
       });

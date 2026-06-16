@@ -77,10 +77,14 @@ def create_app():
             # $...$ → span bilan wrap qilish
             if original.startswith("$$"):
                 inner = original[2:-2]
-                html = html.replace(key, f'<span class="math-display">\\[{inner}\\]</span>')
+                html = html.replace(
+                    key, f'<span class="math-display">\\[{inner}\\]</span>'
+                )
             else:
                 inner = original[1:-1]
-                html = html.replace(key, f'<span class="math-inline">\\({inner}\\)</span>')
+                html = html.replace(
+                    key, f'<span class="math-inline">\\({inner}\\)</span>'
+                )
 
         return html
 

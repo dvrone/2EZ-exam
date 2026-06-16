@@ -160,53 +160,83 @@ def parse_questions(content):
     content = content.replace("\r\n", "\n").replace("\r", "\n")
 
     questions = []
-    current_block = []
     blocks = []
+    current_block = []
+    in_code = False
 
     for line in content.split("\n"):
         stripped = line.strip()
-        if stripped.startswith("?") and current_block:
-            blocks.append(current_block)
-            current_block = [stripped]
-        elif stripped:
-            current_block.append(stripped)
+
+        if stripped.startswith("```"):
+            in_code = not in_code
+
+        if stripped.startswith("?") and not in_code:
+            if current_block:
+                blocks.append(current_block)
+            current_block = [line]
+        else:
+            current_block.append(line)
 
     if current_block:
         blocks.append(current_block)
 
     letters = ["a", "b", "c", "d", "e", "f", "g", "h"]
 
-    for lines in blocks:
-        if not lines or not lines[0].startswith("?"):
+    for block in blocks:
+        if not block or not block[0].strip().startswith("?"):
             continue
 
-        text = lines[0][1:].strip()
+        text_lines = []
+        option_lines = []
+        in_code = False
+        options_started = False
+
+        for line in block:
+            stripped = line.strip()
+
+            if stripped.startswith("```"):
+                in_code = not in_code
+
+            # Variant - ile bashlanadi
+            if not in_code and stripped.startswith("- ") and not options_started:
+                options_started = True
+
+            if options_started:
+                option_lines.append(line)
+            else:
+                text_lines.append(line)
+
+        # Savol matni
+        question_text = "\n".join(text_lines).strip().lstrip("?").strip()
+
+        # Variantlar
         options = []
         correct_index = None
 
-        for line in lines[1:]:
-            if line.startswith("#"):
+        for line in option_lines:
+            stripped = line.strip()
+            if not stripped.startswith("- "):
+                continue
+
+            content_part = stripped[2:].strip()
+
+            if content_part.startswith("#"):
                 correct_index = len(options)
-                options.append(line[1:].strip())
+                options.append(content_part[1:].strip())
             else:
-                options.append(line.strip())
+                options.append(content_part)
 
         if len(options) < 2 or correct_index is None:
             continue
 
-        # 4 tadan kam bo'lsa bo'sh string bilan to'ldirish
         while len(options) < 4:
             options.append("")
 
-        correct_letter = letters[correct_index] if correct_index < len(letters) else "a"
-
-        questions.append(
-            {
-                "text": text,
-                "options": options,
-                "correct": correct_letter,
-            }
-        )
+        questions.append({
+            "text": question_text,
+            "options": options,
+            "correct": letters[correct_index] if correct_index < len(letters) else "a",
+        })
 
     return questions
 
