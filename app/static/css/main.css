@@ -11,12 +11,17 @@
   --warning: #ffc800;
 }
 
+
 /* ========================
    Global
 ======================== */
 body {
   background: #f7f7f7;
-  --bs-body-font-family: "Work Sans", sans-serif;
+  --bs-body-font-family: "Google Sans", "Work Sans", sans-serif;
+}
+
+code, pre {
+  font-family: "Google Sans Code", monospace;
 }
 
 /* ========================
