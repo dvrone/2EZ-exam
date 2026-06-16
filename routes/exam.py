@@ -232,11 +232,15 @@ def parse_questions(content):
         while len(options) < 4:
             options.append("")
 
-        questions.append({
-            "text": question_text,
-            "options": options,
-            "correct": letters[correct_index] if correct_index < len(letters) else "a",
-        })
+        questions.append(
+            {
+                "text": question_text,
+                "options": options,
+                "correct": (
+                    letters[correct_index] if correct_index < len(letters) else "a"
+                ),
+            }
+        )
 
     return questions
 
