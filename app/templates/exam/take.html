@@ -8,12 +8,12 @@
     {% for q in questions %}
     {
       "id": {{ q.id }},
-      "text": {{ q.text | tojson }},
+      "text": {{ q.text | md | tojson }},
       "options": [
-        { "value": "a", "text": {{ q.option_a | tojson }} },
-        { "value": "b", "text": {{ q.option_b | tojson }} },
-        { "value": "c", "text": {{ q.option_c | tojson }} },
-        { "value": "d", "text": {{ q.option_d | tojson }} }
+        { "value": "a", "text": {{ q.option_a | md | tojson }} },
+        { "value": "b", "text": {{ q.option_b | md | tojson }} },
+        { "value": "c", "text": {{ q.option_c | md | tojson }} },
+        { "value": "d", "text": {{ q.option_d | md | tojson }} }
       ],
       "correct": {{ q.correct | tojson }}
     }{% if not loop.last %},{% endif %}
@@ -56,7 +56,7 @@
     <!-- Savol kartasi -->
     <div id="questionCard" class="card border-0 shadow-sm p-4 mb-4"
          style="min-height: 300px;">
-      <h4 id="questionText" class="fw-bold mb-4"></h4>
+      <div id="questionText" class="fw-bold mb-4" style="font-size: 1.2rem;"></div>
       <div id="optionsContainer" class="d-flex flex-column gap-3"></div>
     </div>
 
@@ -68,7 +68,8 @@
     </button>
 
     <!-- Review rejimi xabari -->
-    <div id="reviewBadge" class="alert alert-secondary text-center fw-semibold d-none">
+    <div id="reviewBadge"
+         class="alert alert-secondary text-center fw-semibold d-none">
       <i class="bi bi-eye"></i> Ko'rib chiqish rejimi — javob o'zgartirib bo'lmaydi
     </div>
 

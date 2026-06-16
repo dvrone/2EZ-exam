@@ -249,6 +249,50 @@ body {
 }
 
 /* ========================
+   Markdown inside option-btn
+======================== */
+.option-btn p {
+  margin: 0;
+}
+
+.option-btn pre {
+  text-align: left;
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+}
+
+.option-btn code {
+  font-size: 0.85rem;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+[data-bs-theme="dark"] .option-btn code {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#questionText p {
+  margin: 0;
+}
+
+#questionText pre {
+  text-align: left;
+  margin: 8px 0 0;
+}
+
+#questionText code {
+  font-size: 0.9rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+[data-bs-theme="dark"] #questionText code {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ========================
    Animations
 ======================== */
 @keyframes shake {

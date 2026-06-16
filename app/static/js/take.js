@@ -81,7 +81,7 @@ function renderQuestion() {
   void card.offsetWidth;
   card.classList.add("slide-in");
 
-  questionText.textContent = q.text;
+  renderInto(questionText, q.text);
   optionsContainer.innerHTML = "";
 
   const isAnswered = answers.hasOwnProperty(q.id);
@@ -97,7 +97,7 @@ function renderQuestion() {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "option-btn";
-    btn.textContent = opt.text;
+    renderInto(btn, opt.text);
     btn.setAttribute("data-value", opt.value);
 
     if (isReview) {
