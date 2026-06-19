@@ -296,7 +296,9 @@ code, pre {
 [data-bs-theme="dark"] #questionText code {
   background: rgba(255, 255, 255, 0.1);
 }
-
+.min-width-0 {
+  min-width: 0;
+}
 /* ========================
    Animations
 ======================== */
