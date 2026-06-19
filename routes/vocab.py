@@ -196,21 +196,43 @@ def upload_words(set_id):
             flash("JSON fayl ro'yxat bo'lishi kerak!", "danger")
             return redirect(request.url)
 
+        # Mavjud so'zlarni olish (kichik harfda taqqoslash)
+        existing_words = {w.word.strip().lower() for w in vocab_set.words}
+
         count = 0
+        skipped = 0
+
         for item in data:
             if "word" not in item or "translation" not in item:
                 continue
+
+            word_text = item["word"].strip()
+
+            # Mavjud bo'lsa o'tkazib yuborish
+            if word_text.lower() in existing_words:
+                skipped += 1
+                continue
+
             word = Vocab(
                 set_id=vocab_set.id,
-                word=item["word"],
+                word=word_text,
                 translation=item["translation"],
                 example=item.get("example", None),
             )
             db.session.add(word)
+            existing_words.add(word_text.lower())
             count += 1
 
         db.session.commit()
-        flash(f"{count} ta so'z yuklandi!", "success")
+
+        if skipped > 0:
+            flash(
+                f"{count} ta so'z yuklandi, {skipped} ta mavjud bo'lgani o'tkazib yuborildi!",
+                "success",
+            )
+        else:
+            flash(f"{count} ta so'z yuklandi!", "success")
+
         return redirect(url_for("vocab.detail_set", set_id=vocab_set.id))
 
     return render_template("vocab/upload_words.html", vocab_set=vocab_set)
