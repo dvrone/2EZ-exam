@@ -10,6 +10,19 @@ from app.models import Vocab, VocabSet
 vocab_bp = Blueprint("vocab", __name__)
 
 
+CATEGORIES = [
+    ("noun", "Noun — ot"),
+    ("verb", "Verb — fe'l"),
+    ("adj", "Adjective — sifat"),
+    ("adv", "Adverb — ravish"),
+    ("phrase", "Phrase — ibora"),
+    ("prep", "Preposition — predlog"),
+    ("pron", "Pronoun — olmosh"),
+    ("conj", "Conjunction — bog'lovchi"),
+    ("other", "Other — boshqa"),
+]
+
+
 def admin_required(f):
     from functools import wraps
 
@@ -36,7 +49,9 @@ def list_sets():
 @login_required
 def detail_set(set_id):
     vocab_set = VocabSet.query.get_or_404(set_id)
-    return render_template("vocab/detail.html", vocab_set=vocab_set)
+    return render_template(
+        "vocab/detail.html", vocab_set=vocab_set, categories=CATEGORIES
+    )
 
 
 # To'plam yaratish
@@ -99,6 +114,7 @@ def add_word(set_id):
             word=request.form.get("word"),
             translation=request.form.get("translation"),
             example=request.form.get("example"),
+            category=request.form.get("category") or None,
         )
         db.session.add(word)
         db.session.commit()
@@ -109,10 +125,11 @@ def add_word(set_id):
 
         flash("So'z qo'shildi!", "success")
 
-    return render_template("vocab/add_word.html", vocab_set=vocab_set)
+    return render_template(
+        "vocab/add_word.html", vocab_set=vocab_set, categories=CATEGORIES
+    )
 
 
-# So'zni tahrirlash
 @vocab_bp.route("/vocab/word/<int:word_id>/edit", methods=["GET", "POST"])
 @login_required
 @admin_required
@@ -123,11 +140,12 @@ def edit_word(word_id):
         word.word = request.form.get("word")
         word.translation = request.form.get("translation")
         word.example = request.form.get("example")
+        word.category = request.form.get("category") or None
         db.session.commit()
         flash("So'z yangilandi!", "success")
         return redirect(url_for("vocab.detail_set", set_id=word.set_id))
 
-    return render_template("vocab/edit_word.html", word=word)
+    return render_template("vocab/edit_word.html", word=word, categories=CATEGORIES)
 
 
 # So'zni o'chirish
@@ -218,6 +236,7 @@ def upload_words(set_id):
                 word=word_text,
                 translation=item["translation"],
                 example=item.get("example", None),
+                category=item.get("category", None),
             )
             db.session.add(word)
             existing_words.add(word_text.lower())

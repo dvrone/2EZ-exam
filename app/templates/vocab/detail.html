@@ -80,6 +80,9 @@
                     <div class="flex-grow-1">
                       <p class="mb-0 fw-semibold">
                         {{ word.word }}
+                        {% if word.category %}
+                          <span class="badge bg-secondary ms-1" style="font-size: 0.7rem;">{{ word.category }}</span>
+                        {% endif %}
                         <span class="text-muted fw-normal">— {{ word.translation }}</span>
                       </p>
                       {% if word.example %}<small class="text-muted fst-italic">{{ word.example }}</small>{% endif %}

@@ -156,6 +156,9 @@ class Vocab(db.Model):
     word = db.Column(db.String(200), nullable=False)
     translation = db.Column(db.String(200), nullable=False)
     example = db.Column(db.Text, nullable=True)
+    category = db.Column(
+        db.String(50), nullable=True
+    )  # noun, verb, adj, adv, phrase...
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     def __repr__(self):
