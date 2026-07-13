@@ -1,5 +1,6 @@
 import os
 import re
+from datetime import timedelta
 
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
@@ -27,6 +28,14 @@ def create_app():
     )
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["DEBUG"] = os.getenv("DEBUG", "False") == "True"
+
+    # Session sozlamalari
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "fallback-secret-key")
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
+    app.config["SESSION_COOKIE_SECURE"] = True
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    app.config["REMEMBER_COOKIE_DURATION"] = timedelta(days=30)
 
     db.init_app(app)
     login_manager.init_app(app)

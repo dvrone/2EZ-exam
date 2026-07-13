@@ -69,7 +69,7 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user and user.check_password(password):
-            login_user(user)
+            login_user(user, remember=True)
             return redirect(url_for("auth.dashboard"))
 
         flash("Email yoki parol noto'g'ri!", "danger")
@@ -245,7 +245,7 @@ def google_callback():
                 user.avatar_url = picture
                 db.session.commit()
 
-        login_user(user)
+        login_user(user, remember=True)
         flash(f"Xush kelibsiz, {user.username}!", "success")
         return redirect(url_for("auth.dashboard"))
 
