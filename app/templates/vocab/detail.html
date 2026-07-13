@@ -19,21 +19,26 @@
           </span>
         </div>
         {% if vocab_set.words|length >= 1 %}
-          <div class="d-flex gap-2">
-            <a href="{{ url_for('vocab.flashcard', set_id=vocab_set.id) }}"
-               class="btn btn-primary w-100 py-3 fw-bold"
-               style="border-radius: 14px">
-              <i class="bi bi-lightning-charge-fill"></i> Flashcard
-            </a>
-            {% if vocab_set.words|length >= 4 %}
-              <a href="{{ url_for('vocab.quiz', set_id=vocab_set.id) }}"
-                 class="btn btn-outline-primary w-100 py-3 fw-bold"
-                 style="border-radius: 14px">
-                <i class="bi bi-question-circle"></i> Quiz
-              </a>
-            {% endif %}
-          </div>
-        {% else %}
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('vocab.flashcard', set_id=vocab_set.id) }}"
+          class="btn btn-primary w-100 py-3 fw-bold"
+          style="border-radius: 14px;">
+          <i class="bi bi-lightning-charge-fill"></i> Flashcard
+        </a>
+        {% if vocab_set.words|length >= 4 %}
+        <a href="{{ url_for('vocab.quiz', set_id=vocab_set.id) }}"
+          class="btn btn-outline-primary w-100 py-3 fw-bold"
+          style="border-radius: 14px;">
+          <i class="bi bi-question-circle"></i> Quiz
+        </a>
+        {% endif %}
+        <a href="{{ url_for('vocab.pronounce', set_id=vocab_set.id) }}"
+          class="btn btn-outline-success w-100 py-3 fw-bold"
+          style="border-radius: 14px;">
+          <i class="bi bi-mic-fill"></i> Talaffuz
+        </a>
+      </div>
+      {% endif %}
           <button class="btn btn-secondary w-100 py-3" disabled>
             <i class="bi bi-exclamation-circle"></i> So'zlar yo'q
           </button>

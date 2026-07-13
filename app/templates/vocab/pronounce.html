@@ -1,0 +1,126 @@
+{% extends 'base_fullscreen.html' %}
+{% block title %}Talaffuz — {{ vocab_set.title }}{% endblock %}
+{% block content %}
+
+<script id="wordsData" type="application/json">
+  [
+    {% for word in words %}
+    {
+      "id": {{ word.id }},
+      "word": {{ word.word | tojson }},
+      "translation": {{ word.translation | tojson }}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+</script>
+
+<div class="row justify-content-center">
+  <div class="col-md-6">
+
+    <!-- Top bar -->
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
+         class="text-muted text-decoration-none fs-5">
+        <i class="bi bi-x-lg"></i>
+      </a>
+      <div class="progress flex-grow-1" style="height: 12px; border-radius: 10px;">
+        <div class="progress-bar progress-bar-custom"
+             id="progressBar" style="width: 0%;"></div>
+      </div>
+      <span class="text-muted small">
+        <span id="currentNum">1</span> / {{ words|length }}
+      </span>
+    </div>
+
+    <!-- So'z kartasi -->
+    <div class="card border-0 shadow-sm p-5 text-center mb-4">
+
+      <p class="text-muted small mb-2">Quyidagi so'zni talaffuz qiling</p>
+
+      <h2 class="fw-bold mb-1" id="wordText"></h2>
+      <p class="text-muted mb-3" id="translationText"></p>
+
+      <!-- TTS — eshitish -->
+      <button onclick="speakWord()"
+              class="btn btn-outline-primary btn-sm mb-4">
+        <i class="bi bi-volume-up-fill"></i> Eshitish
+      </button>
+
+      <!-- Mikrofon -->
+      <div id="micSection">
+        <button id="micBtn"
+                class="btn btn-success btn-lg rounded-circle mb-3"
+                style="width: 80px; height: 80px; font-size: 1.8rem;"
+                onclick="startListening()">
+          <i class="bi bi-mic-fill"></i>
+        </button>
+        <p class="text-muted small" id="micHint">
+          Mikrofon tugmasini bosib so'zni ayting
+        </p>
+      </div>
+
+      <!-- Natija -->
+      <div id="resultSection" class="d-none">
+        <div id="resultIcon" style="font-size: 3rem;" class="mb-2"></div>
+        <p class="fw-bold" id="resultText"></p>
+        <p class="text-muted small">
+          Siz aytdingiz: <span id="spokenText" class="fst-italic"></span>
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Tugmalar -->
+    <div id="actionBtns" class="d-none">
+      <div class="d-flex gap-3">
+        <button onclick="nextWord(false)"
+                class="btn btn-outline-danger w-100 py-3 fw-bold"
+                style="border-radius: 14px;">
+          <i class="bi bi-arrow-repeat"></i> Qayta
+        </button>
+        <button onclick="nextWord(true)"
+                class="btn btn-success w-100 py-3 fw-bold"
+                style="border-radius: 14px;">
+          Keyingi <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Brauzer qo'llab-quvvatlamasa -->
+    <div id="notSupported" class="alert alert-warning d-none">
+      <i class="bi bi-exclamation-triangle"></i>
+      Brauzeringiz mikrofon ovozini tanishni qo'llab-quvvatlamaydi.
+      Chrome yoki Edge ishlatishingizni tavsiya qilamiz.
+    </div>
+
+    <!-- Natija -->
+    <div id="finalResult" class="d-none text-center">
+      <div class="card border-0 shadow-sm p-5">
+        <i class="bi bi-mic-fill text-success" style="font-size: 4rem;"></i>
+        <h3 class="fw-bold mt-3">Bajarildi!</h3>
+        <p class="text-muted">
+          <span class="text-success fw-bold" id="correctCount">0</span> ta to'g'ri /
+          <span class="text-danger fw-bold" id="wrongCount">0</span> ta noto'g'ri
+        </p>
+        <div class="d-flex gap-3 mt-3">
+          <button onclick="restartPronounce()"
+                  class="btn btn-primary w-100 py-2 fw-bold">
+            <i class="bi bi-arrow-repeat"></i> Qayta
+          </button>
+          <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
+             class="btn btn-outline-secondary w-100 py-2 fw-bold">
+            <i class="bi bi-arrow-left"></i> Orqaga
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="mb-5"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pronounce.js') }}"></script>
+{% endblock %}

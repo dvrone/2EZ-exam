@@ -278,3 +278,17 @@ def submit_quiz(set_id):
         return {"xp": xp_earned, "total_xp": current_user.xp}
 
     return {"xp": 0, "total_xp": current_user.xp}
+
+
+@vocab_bp.route("/vocab/<int:set_id>/pronounce")
+@login_required
+def pronounce(set_id):
+    vocab_set = VocabSet.query.get_or_404(set_id)
+
+    if len(vocab_set.words) < 1:
+        flash("Bu to'plamda so'zlar yo'q!", "warning")
+        return redirect(url_for("vocab.detail_set", set_id=set_id))
+
+    words = list(vocab_set.words)
+    random.shuffle(words)
+    return render_template("vocab/pronounce.html", vocab_set=vocab_set, words=words)
