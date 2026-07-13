@@ -43,76 +43,76 @@
             <i class="bi bi-exclamation-circle"></i> So'zlar yo'q
           </button>
         {% endif %}
-    </div>
-    {% if current_user.is_admin %}
-      <!-- Admin -->
-      <div class="card border-0 shadow-sm p-4 mb-4">
-        <h6 class="fw-bold mb-3 text-muted">
-          <i class="bi bi-shield-fill"></i> Admin boshqaruvi
-        </h6>
-        <div class="d-flex gap-2 flex-wrap">
-          <a href="{{ url_for('vocab.add_word', set_id=vocab_set.id) }}"
-             class="btn btn-outline-primary btn-sm">
-            <i class="bi bi-plus-lg"></i> So'z qo'shish
-          </a>
-          <a href="{{ url_for('vocab.edit_set', set_id=vocab_set.id) }}"
-             class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-pencil"></i> Tahrirlash
-          </a>
-          <a href="{{ url_for('vocab.upload_words', set_id=vocab_set.id) }}"
-             class="btn btn-outline-warning btn-sm">
-            <i class="bi bi-upload"></i> JSON yuklash
-          </a>
-          <form method="POST"
-                action="{{ url_for('vocab.delete_set', set_id=vocab_set.id) }}"
-                onsubmit="return confirm('Ochirish?')">
-            <button type="submit" class="btn btn-outline-danger btn-sm">
-              <i class="bi bi-trash"></i> O'chirish
-            </button>
-          </form>
-        </div>
       </div>
-      <!-- So'zlar -->
-      {% if vocab_set.words %}
-        <div class="card border-0 shadow-sm p-4">
-          <h6 class="fw-bold mb-3">
-            <i class="bi bi-list-ul"></i> So'zlar ({{ vocab_set.words|length }})
+      {% if current_user.is_admin %}
+        <!-- Admin -->
+        <div class="card border-0 shadow-sm p-4 mb-4">
+          <h6 class="fw-bold mb-3 text-muted">
+            <i class="bi bi-shield-fill"></i> Admin boshqaruvi
           </h6>
-          <div class="list-group list-group-flush">
-            {% for word in vocab_set.words %}
-              <div class="list-group-item border-0 px-0">
-                <div class="d-flex justify-content-between align-items-start">
-                  <div class="flex-grow-1">
-                    <p class="mb-0 fw-semibold">
-                      {{ word.word }}
-                      {% if word.category %}
-                        <span class="badge bg-secondary ms-1" style="font-size: 0.7rem;">{{ word.category }}</span>
-                      {% endif %}
-                      <span class="text-muted fw-normal">— {{ word.translation }}</span>
-                    </p>
-                    {% if word.example %}<small class="text-muted fst-italic">{{ word.example }}</small>{% endif %}
-                  </div>
-                  <div class="d-flex gap-1 ms-3">
-                    <a href="{{ url_for('vocab.edit_word', word_id=word.id) }}"
-                       class="btn btn-outline-secondary btn-sm">
-                      <i class="bi bi-pencil"></i>
-                    </a>
-                    <form method="POST"
-                          action="{{ url_for('vocab.delete_word', word_id=word.id) }}"
-                          onsubmit="return confirm('Ochirish?')">
-                      <button type="submit" class="btn btn-outline-danger btn-sm">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            {% endfor %}
+          <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('vocab.add_word', set_id=vocab_set.id) }}"
+               class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-plus-lg"></i> So'z qo'shish
+            </a>
+            <a href="{{ url_for('vocab.edit_set', set_id=vocab_set.id) }}"
+               class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-pencil"></i> Tahrirlash
+            </a>
+            <a href="{{ url_for('vocab.upload_words', set_id=vocab_set.id) }}"
+               class="btn btn-outline-warning btn-sm">
+              <i class="bi bi-upload"></i> JSON yuklash
+            </a>
+            <form method="POST"
+                  action="{{ url_for('vocab.delete_set', set_id=vocab_set.id) }}"
+                  onsubmit="return confirm('Ochirish?')">
+              <button type="submit" class="btn btn-outline-danger btn-sm">
+                <i class="bi bi-trash"></i> O'chirish
+              </button>
+            </form>
           </div>
         </div>
+        <!-- So'zlar -->
+        {% if vocab_set.words %}
+          <div class="card border-0 shadow-sm p-4">
+            <h6 class="fw-bold mb-3">
+              <i class="bi bi-list-ul"></i> So'zlar ({{ vocab_set.words|length }})
+            </h6>
+            <div class="list-group list-group-flush">
+              {% for word in vocab_set.words %}
+                <div class="list-group-item border-0 px-0">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                      <p class="mb-0 fw-semibold">
+                        {{ word.word }}
+                        {% if word.category %}
+                          <span class="badge bg-secondary ms-1" style="font-size: 0.7rem;">{{ word.category }}</span>
+                        {% endif %}
+                        <span class="text-muted fw-normal">— {{ word.translation }}</span>
+                      </p>
+                      {% if word.example %}<small class="text-muted fst-italic">{{ word.example }}</small>{% endif %}
+                    </div>
+                    <div class="d-flex gap-1 ms-3">
+                      <a href="{{ url_for('vocab.edit_word', word_id=word.id) }}"
+                         class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-pencil"></i>
+                      </a>
+                      <form method="POST"
+                            action="{{ url_for('vocab.delete_word', word_id=word.id) }}"
+                            onsubmit="return confirm('Ochirish?')">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
       {% endif %}
-    {% endif %}
+    </div>
   </div>
-</div>
-<div class="mb-5"></div>
+  <div class="mb-5"></div>
 {% endblock %}
