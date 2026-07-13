@@ -1,131 +1,125 @@
-{% extends 'base.html' %}
-{% block title %}{{ vocab_set.title }}{% endblock %}
+{% extends 'base_fullscreen.html' %}
+{% block title %}Talaffuz — {{ vocab_set.title }}{% endblock %}
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h3 class="mb-0 fw-bold">{{ vocab_set.title }}</h3>
-  <a href="{{ url_for('vocab.list_sets') }}"
-     class="btn btn-outline-secondary btn-sm">
-    <i class="bi bi-arrow-left"></i> Orqaga
-  </a>
-</div>
+  <script id="wordsData" type="application/json">
+  [
+    {% for word in words %}
+    {
+      "id": {{ word.id }},
+      "word": {{ word.word | tojson }},
+      "translation": {{ word.translation | tojson }}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  </script>
 
-<div class="row justify-content-center">
-  <div class="col-md-8">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
 
-    <!-- Info -->
-    <div class="card border-0 shadow-sm p-4 mb-4">
-      {% if vocab_set.description %}
-        <p class="text-muted mb-3">{{ vocab_set.description }}</p>
-      {% endif %}
-      <div class="d-flex gap-2 mb-4">
-        <span class="badge bg-light text-dark fs-6 border">
-          <i class="bi bi-card-text"></i> {{ vocab_set.words|length }} so'z
+      <!-- Top bar -->
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
+           class="text-muted text-decoration-none fs-5">
+          <i class="bi bi-x-lg"></i>
+        </a>
+        <div class="progress flex-grow-1" style="height: 12px; border-radius: 10px;">
+          <div class="progress-bar progress-bar-custom" id="progressBar" style="width: 0%;"></div>
+        </div>
+        <span class="text-muted small">
+          <span id="currentNum">1</span> / {{ words|length }}
         </span>
       </div>
 
-      {% if vocab_set.words|length >= 1 %}
-        <div class="d-flex gap-2">
-          <a href="{{ url_for('vocab.flashcard', set_id=vocab_set.id) }}"
-             class="btn btn-primary w-100 py-3 fw-bold"
-             style="border-radius: 14px;">
-            <i class="bi bi-lightning-charge-fill"></i> Flashcard
-          </a>
-          {% if vocab_set.words|length >= 4 %}
-            <a href="{{ url_for('vocab.quiz', set_id=vocab_set.id) }}"
-               class="btn btn-outline-primary w-100 py-3 fw-bold"
-               style="border-radius: 14px;">
-              <i class="bi bi-question-circle"></i> Quiz
-            </a>
-          {% endif %}
-          <a href="{{ url_for('vocab.pronounce', set_id=vocab_set.id) }}"
-             class="btn btn-outline-success w-100 py-3 fw-bold"
-             style="border-radius: 14px;">
-            <i class="bi bi-mic-fill"></i> Talaffuz
-          </a>
-        </div>
-      {% else %}
-        <button class="btn btn-secondary w-100 py-3" disabled>
-          <i class="bi bi-exclamation-circle"></i> So'zlar yo'q
+      <!-- So'z kartasi -->
+      <div class="card border-0 shadow-sm p-5 text-center mb-4">
+
+        <p class="text-muted small mb-2">Quyidagi so'zni talaffuz qiling</p>
+
+        <h2 class="fw-bold mb-1" id="wordText"></h2>
+        <p class="text-muted mb-3" id="translationText"></p>
+
+        <!-- TTS — eshitish -->
+        <button onclick="speakWord()" class="btn btn-outline-primary btn-sm mb-4">
+          <i class="bi bi-volume-up-fill"></i> Eshitish
         </button>
-      {% endif %}
-    </div>
 
-    {% if current_user.is_admin %}
-    <!-- Admin -->
-    <div class="card border-0 shadow-sm p-4 mb-4">
-      <h6 class="fw-bold mb-3 text-muted">
-        <i class="bi bi-shield-fill"></i> Admin boshqaruvi
-      </h6>
-      <div class="d-flex gap-2 flex-wrap">
-        <a href="{{ url_for('vocab.add_word', set_id=vocab_set.id) }}"
-           class="btn btn-outline-primary btn-sm">
-          <i class="bi bi-plus-lg"></i> So'z qo'shish
-        </a>
-        <a href="{{ url_for('vocab.edit_set', set_id=vocab_set.id) }}"
-           class="btn btn-outline-secondary btn-sm">
-          <i class="bi bi-pencil"></i> Tahrirlash
-        </a>
-        <a href="{{ url_for('vocab.upload_words', set_id=vocab_set.id) }}"
-           class="btn btn-outline-warning btn-sm">
-          <i class="bi bi-upload"></i> JSON yuklash
-        </a>
-        <form method="POST"
-              action="{{ url_for('vocab.delete_set', set_id=vocab_set.id) }}"
-              onsubmit="return confirm('Ochirish?')">
-          <button type="submit" class="btn btn-outline-danger btn-sm">
-            <i class="bi bi-trash"></i> O'chirish
+        <!-- Mikrofon -->
+        <div id="micSection">
+          <button id="micBtn"
+                  class="btn btn-success btn-lg rounded-circle mb-3"
+                  style="width: 80px;
+                         height: 80px;
+                         font-size: 1.8rem"
+                  onclick="startListening()">
+            <i class="bi bi-mic-fill"></i>
           </button>
-        </form>
-      </div>
-    </div>
+          <p class="text-muted small" id="micHint">Mikrofon tugmasini bosib so'zni ayting</p>
+          <p class="text-muted" style="font-size: 0.75rem;">
+            <i class="bi bi-info-circle"></i>
+            Chrome brauzerida eng yaxshi ishlaydi
+          </p>
+        </div>
 
-    <!-- So'zlar -->
-    {% if vocab_set.words %}
-    <div class="card border-0 shadow-sm p-4">
-      <h6 class="fw-bold mb-3">
-        <i class="bi bi-list-ul"></i> So'zlar ({{ vocab_set.words|length }})
-      </h6>
-      <div class="list-group list-group-flush">
-        {% for word in vocab_set.words %}
-        <div class="list-group-item border-0 px-0">
-          <div class="d-flex justify-content-between align-items-start">
-            <div class="flex-grow-1">
-              <p class="mb-0 fw-semibold">
-                {{ word.word }}
-                {% if word.category %}
-                  <span class="badge bg-secondary ms-1"
-                        style="font-size: 0.7rem;">{{ word.category }}</span>
-                {% endif %}
-                <span class="text-muted fw-normal">— {{ word.translation }}</span>
-              </p>
-              {% if word.example %}
-                <small class="text-muted fst-italic">{{ word.example }}</small>
-              {% endif %}
-            </div>
-            <div class="d-flex gap-1 ms-3">
-              <a href="{{ url_for('vocab.edit_word', word_id=word.id) }}"
-                 class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-pencil"></i>
-              </a>
-              <form method="POST"
-                    action="{{ url_for('vocab.delete_word', word_id=word.id) }}"
-                    onsubmit="return confirm('Ochirish?')">
-                <button type="submit" class="btn btn-outline-danger btn-sm">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </form>
-            </div>
+        <!-- Natija -->
+        <div id="resultSection" class="d-none">
+          <div id="resultIcon" style="font-size: 3rem;" class="mb-2"></div>
+          <p class="fw-bold" id="resultText"></p>
+          <p class="text-muted small">
+            Siz aytdingiz: <span id="spokenText" class="fst-italic"></span>
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Tugmalar -->
+      <div id="actionBtns" class="d-none">
+        <div class="d-flex gap-3">
+          <button onclick="nextWord(false)"
+                  class="btn btn-outline-danger w-100 py-3 fw-bold"
+                  style="border-radius: 14px">
+            <i class="bi bi-arrow-repeat"></i> Qayta
+          </button>
+          <button onclick="nextWord(true)"
+                  class="btn btn-success w-100 py-3 fw-bold"
+                  style="border-radius: 14px">
+            Keyingi <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Brauzer qo'llab-quvvatlamasa -->
+      <div id="notSupported" class="alert alert-warning d-none">
+        <i class="bi bi-exclamation-triangle"></i>
+        Brauzeringiz mikrofon ovozini tanishni qo'llab-quvvatlamaydi.
+        Chrome yoki Edge ishlatishingizni tavsiya qilamiz.
+      </div>
+
+      <!-- Natija -->
+      <div id="finalResult" class="d-none text-center">
+        <div class="card border-0 shadow-sm p-5">
+          <i class="bi bi-mic-fill text-success" style="font-size: 4rem;"></i>
+          <h3 class="fw-bold mt-3">Bajarildi!</h3>
+          <p class="text-muted">
+            <span class="text-success fw-bold" id="correctCount">0</span> ta to'g'ri /
+            <span class="text-danger fw-bold" id="wrongCount">0</span> ta noto'g'ri
+          </p>
+          <div class="d-flex gap-3 mt-3">
+            <button onclick="restartPronounce()" class="btn btn-primary w-100 py-2 fw-bold">
+              <i class="bi bi-arrow-repeat"></i> Qayta
+            </button>
+            <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
+               class="btn btn-outline-secondary w-100 py-2 fw-bold">
+              <i class="bi bi-arrow-left"></i> Orqaga
+            </a>
           </div>
         </div>
-        {% endfor %}
       </div>
+
     </div>
-    {% endif %}
-    {% endif %}
-
   </div>
-</div>
 
-<div class="mb-5"></div>
+  <div class="mb-5"></div>
 {% endblock %}
+
+{% block scripts %}<script src="{{ url_for('static', filename='js/pronounce.js') }}"></script>{% endblock %}
