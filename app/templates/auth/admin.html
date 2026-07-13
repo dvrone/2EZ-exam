@@ -113,44 +113,43 @@
   </div>
   <!-- Mobil: kartalar -->
   <!-- Mobil: kartalar -->
-<div class="d-md-none mb-4">
-  {% for user in users %}
-  <div class="card border-0 shadow-sm mb-3 p-3">
-    <div class="d-flex align-items-center gap-3">
-      {{ avatar(user, 42) }}
-      <div class="flex-grow-1 min-width-0">
-        <div class="d-flex align-items-center gap-2 flex-wrap">
-          <span class="fw-bold text-truncate">{{ user.username }}</span>
-          {% if user.is_admin %}
-            <span class="badge bg-warning text-dark">
-              <i class="bi bi-shield-fill"></i>
-            </span>
-          {% endif %}
-          {% if user.id == current_user.id %}
-            <span class="badge bg-primary">Sen</span>
-          {% endif %}
+  <div class="d-md-none mb-4">
+    {% for user in users %}
+      <div class="card border-0 shadow-sm mb-3 p-3">
+        <div class="d-flex align-items-center gap-3">
+          {{ avatar(user, 42) }}
+          <div class="flex-grow-1 min-width-0">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span class="fw-bold text-truncate">{{ user.username }}</span>
+              {% if user.is_admin %}
+                <span class="badge bg-warning text-dark">
+                  <i class="bi bi-shield-fill"></i>
+                </span>
+              {% endif %}
+              {% if user.id == current_user.id %}
+                <span class="badge bg-primary">Sen</span>
+              {% endif %}
+            </div>
+            <small class="text-muted text-truncate d-block">{{ user.email }}</small>
+            <small class="text-warning fw-bold">
+              <i class="bi bi-lightning-charge-fill"></i> {{ user.xp }} XP
+            </small>
+          </div>
+          <div class="flex-shrink-0">
+            {% if user.id != current_user.id %}
+              <a href="{{ url_for('auth.user_profile', user_id=user.id) }}"
+                 class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-eye"></i>
+              </a>
+            {% else %}
+              <a href="{{ url_for("auth.profile") }}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-person-circle"></i>
+              </a>
+            {% endif %}
+          </div>
         </div>
-        <small class="text-muted text-truncate d-block">{{ user.email }}</small>
-        <small class="text-warning fw-bold">
-          <i class="bi bi-lightning-charge-fill"></i> {{ user.xp }} XP
-        </small>
       </div>
-      <div class="flex-shrink-0">
-        {% if user.id != current_user.id %}
-          <a href="{{ url_for('auth.user_profile', user_id=user.id) }}"
-             class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-eye"></i>
-          </a>
-        {% else %}
-          <a href="{{ url_for('auth.profile') }}"
-             class="btn btn-outline-primary btn-sm">
-            <i class="bi bi-person-circle"></i>
-          </a>
-        {% endif %}
-      </div>
-    </div>
+    {% endfor %}
   </div>
-  {% endfor %}
-</div>
   <div class="mb-5"></div>
 {% endblock %}

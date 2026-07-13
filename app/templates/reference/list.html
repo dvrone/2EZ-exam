@@ -19,17 +19,17 @@
           <a href="{{ url_for('reference.detail_reference', ref_id=ref.id) }}"
              class="text-decoration-none">
             <div class="card border-0 shadow-sm h-100 p-3"
-                style="cursor: pointer; transition: transform 0.2s;"
-                onmouseover="this.style.transform='scale(1.02)'"
-                onmouseout="this.style.transform='scale(1)'">
+                 style="cursor: pointer;
+                        transition: transform 0.2s"
+                 onmouseover="this.style.transform='scale(1.02)'"
+                 onmouseout="this.style.transform='scale(1)'">
               <div class="d-flex align-items-center gap-2 mb-2">
-                <i class="bi bi-file-earmark-text"
-                  style="font-size: 1.5rem; color: #4a90d9;"></i>
+                <i class="bi bi-file-earmark-text" style="font-size: 1.5rem; color: #4a90d9;"></i>
                 <h5 class="fw-bold mb-0">{{ ref.title }}</h5>
               </div>
               <small class="text-muted">
                 <i class="bi bi-calendar3"></i>
-                {{ ref.created_at.strftime('%d.%m.%Y') }}
+                {{ ref.created_at.strftime("%d.%m.%Y") }}
               </small>
             </div>
           </a>

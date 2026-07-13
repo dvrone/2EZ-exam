@@ -2,7 +2,7 @@ from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    url_for)
 from flask_login import current_user, login_required, login_user, logout_user
 
-from app import db
+from app import db, oauth
 from app.models import Exam, Result, User
 
 auth = Blueprint("auth", __name__)
@@ -194,3 +194,61 @@ def admin_panel():
         abort(404)
     users = User.query.order_by(User.created_at.desc()).all()
     return render_template("auth/admin.html", users=users)
+
+
+@auth.route("/auth/google")
+def google_login():
+    redirect_uri = url_for("auth.google_callback", _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
+
+@auth.route("/auth/google/callback")
+def google_callback():
+    try:
+        token = oauth.google.authorize_access_token()
+        userinfo = token.get("userinfo")
+
+        if not userinfo:
+            flash("Google dan ma'lumot olishda xatolik!", "danger")
+            return redirect(url_for("auth.login"))
+
+        email = userinfo.get("email")
+        name = userinfo.get("name")
+        picture = userinfo.get("picture")
+
+        # Mavjud userni tekshirish
+        user = User.query.filter_by(email=email).first()
+
+        if not user:
+            # Yangi user yaratish
+            username = email.split("@")[0]
+
+            # Username band bo'lsa raqam qo'shish
+            base_username = username
+            counter = 1
+            while User.query.filter_by(username=username).first():
+                username = f"{base_username}{counter}"
+                counter += 1
+
+            user = User(
+                username=username,
+                email=email,
+                password="",  # Google userlarda parol yo'q
+                avatar_url=picture,
+            )
+            db.session.add(user)
+            db.session.commit()
+
+        else:
+            # Mavjud user avatarini yangilash
+            if picture and not user.avatar_url:
+                user.avatar_url = picture
+                db.session.commit()
+
+        login_user(user)
+        flash(f"Xush kelibsiz, {user.username}!", "success")
+        return redirect(url_for("auth.dashboard"))
+
+    except Exception as e:
+        flash("Google bilan kirishda xatolik yuz berdi!", "danger")
+        return redirect(url_for("auth.login"))

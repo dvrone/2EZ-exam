@@ -1,12 +1,15 @@
 import os
 import re
 
+from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from markdown import markdown as md_to_html
+
+oauth = OAuth()
 
 load_dotenv()
 
@@ -28,6 +31,16 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
     bcrypt.init_app(app)
+
+    oauth.init_app(app)
+
+    google = oauth.register(
+        name="google",
+        client_id=os.getenv("GOOGLE_CLIENT_ID"),
+        client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+        server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+        client_kwargs={"scope": "openid email profile"},
+    )
 
     login_manager.login_view = "auth.login"
     login_manager.login_message = "Iltimos, avval tizimga kiring!"

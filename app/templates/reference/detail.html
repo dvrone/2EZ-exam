@@ -2,54 +2,51 @@
 {% block title %}{{ reference.title }}{% endblock %}
 {% block content %}
 
-<!-- Header -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h3 class="mb-0 fw-bold">{{ reference.title }}</h3>
-  <div class="d-flex gap-2">
-    {% if current_user.is_admin %}
-      <a href="{{ url_for('reference.edit_reference', ref_id=reference.id) }}"
-         class="btn btn-outline-primary btn-sm">
-        <i class="bi bi-pencil"></i> Tahrirlash
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0 fw-bold">{{ reference.title }}</h3>
+    <div class="d-flex gap-2">
+      {% if current_user.is_admin %}
+        <a href="{{ url_for('reference.edit_reference', ref_id=reference.id) }}"
+           class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-pencil"></i> Tahrirlash
+        </a>
+        <form method="POST"
+              action="{{ url_for('reference.delete_reference', ref_id=reference.id) }}"
+              onsubmit="return confirm('Ochirish?')">
+          <button type="submit" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-trash"></i> O'chirish
+          </button>
+        </form>
+      {% endif %}
+      <a href="{{ url_for("reference.list_reference") }}"
+         class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Orqaga
       </a>
-      <form method="POST"
-            action="{{ url_for('reference.delete_reference', ref_id=reference.id) }}"
-            onsubmit="return confirm('Ochirish?')">
-        <button type="submit" class="btn btn-outline-danger btn-sm">
-          <i class="bi bi-trash"></i> O'chirish
-        </button>
-      </form>
-    {% endif %}
-    <a href="{{ url_for('reference.list_reference') }}"
-       class="btn btn-outline-secondary btn-sm">
-      <i class="bi bi-arrow-left"></i> Orqaga
-    </a>
-  </div>
-</div>
-
-<div class="row justify-content-center">
-  <div class="col-md-8">
-    <div class="card border-0 shadow-sm p-4">
-      <div id="referenceContent"
-           style="line-height: 1.8; font-size: 1.05rem;">
-        {{ reference.content | md | safe }}
-      </div>
-      <hr>
-      <small class="text-muted">
-        <i class="bi bi-calendar3"></i>
-        {{ reference.created_at.strftime('%d.%m.%Y %H:%M') }}
-      </small>
     </div>
   </div>
-</div>
 
-<div class="mb-5"></div>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card border-0 shadow-sm p-4">
+        <div id="referenceContent" style="line-height: 1.8; font-size: 1.05rem;">{{ reference.content | md | safe }}</div>
+        <hr>
+        <small class="text-muted">
+          <i class="bi bi-calendar3"></i>
+          {{ reference.created_at.strftime("%d.%m.%Y %H:%M") }}
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-5"></div>
 {% endblock %}
 
 {% block scripts %}
-<script>
+  <script>
   document.addEventListener("DOMContentLoaded", () => {
     const content = document.getElementById("referenceContent");
     if (content) applyRendering(content);
   });
-</script>
+  </script>
 {% endblock %}

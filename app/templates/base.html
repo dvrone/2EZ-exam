@@ -55,7 +55,7 @@
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     <script src="{{ url_for('static', filename='js/greeting.js') }}"></script>
     {% block scripts %}
-    <script>
+      <script>
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
@@ -64,7 +64,7 @@
         .catch((err) => console.log("SW error:", err));
     });
   }
-</script>
+      </script>
     {% endblock %}
   </body>
 </html>
