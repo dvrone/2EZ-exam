@@ -28,21 +28,24 @@
             <h5 class="fw-bold">{{ s.title }}</h5>
             <p class="text-muted small">{{ s.description or "Tavsif yo'q" }}</p>
             <div class="mt-auto pt-3 d-flex gap-2">
-  <a href="{{ url_for('vocab.flashcard', set_id=s.id) }}"
-     class="btn btn-primary btn-sm w-100" style="border-radius: 10px;">
-    <i class="bi bi-lightning-charge-fill"></i> Flashcard
-  </a>
-  {% if s.words|length >= 4 %}
-  <a href="{{ url_for('vocab.quiz', set_id=s.id) }}"
-     class="btn btn-outline-primary btn-sm w-100" style="border-radius: 10px;">
-    <i class="bi bi-question-circle"></i> Quiz
-  </a>
-  {% endif %}
-  <a href="{{ url_for('vocab.pronounce', set_id=s.id) }}"
-     class="btn btn-outline-success btn-sm w-100" style="border-radius: 10px;">
-    <i class="bi bi-mic-fill"></i>
-  </a>
-</div>
+              <a href="{{ url_for('vocab.flashcard', set_id=s.id) }}"
+                 class="btn btn-primary btn-sm w-100"
+                 style="border-radius: 10px">
+                <i class="bi bi-lightning-charge-fill"></i> Flashcard
+              </a>
+              {% if s.words|length >= 4 %}
+                <a href="{{ url_for('vocab.quiz', set_id=s.id) }}"
+                   class="btn btn-outline-primary btn-sm w-100"
+                   style="border-radius: 10px">
+                  <i class="bi bi-question-circle"></i> Quiz
+                </a>
+              {% endif %}
+              <a href="{{ url_for('vocab.pronounce', set_id=s.id) }}"
+                 class="btn btn-outline-success btn-sm w-100"
+                 style="border-radius: 10px">
+                <i class="bi bi-mic-fill"></i>
+              </a>
+            </div>
             <a href="{{ url_for('vocab.detail_set', set_id=s.id) }}"
                class="btn btn-outline-secondary btn-sm mt-2">
               <i class="bi bi-list-ul"></i> So'zlar
