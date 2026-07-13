@@ -12,6 +12,13 @@
         document.documentElement.setAttribute("data-bs-theme", t);
       })();
     </script>
+    <link rel="manifest" href="/static/manifest.json" />
+    <meta name="theme-color" content="#4a90d9" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="2EZ" />
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght,MONO@0,300..800,1;1,300..800,1&family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap"
@@ -47,6 +54,17 @@
     <script src="{{ url_for('static', filename='js/form-validation.js') }}"></script>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     <script src="{{ url_for('static', filename='js/greeting.js') }}"></script>
-    {% block scripts %}{% endblock %}
+    {% block scripts %}
+    <script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/static/js/service-worker.js")
+        .then((reg) => console.log("SW registered:", reg.scope))
+        .catch((err) => console.log("SW error:", err));
+    });
+  }
+</script>
+    {% endblock %}
   </body>
 </html>
