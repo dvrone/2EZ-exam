@@ -1,13 +1,14 @@
 # 2EZ-exam
 
-A test and reference platform for students.
+A test, vocabulary, and reference platform for students.
 
 ## Tech Stack
 
 - **Backend:** Python, Flask, SQLAlchemy, Flask-Login, Flask-Bcrypt
-- **Frontend:** Jinja2, Bootstrap 5, Bootstrap Icons
+- **Frontend:** Jinja2, Bootstrap 5, Bootstrap Icons, Google Sans
 - **Database:** SQLite
 - **Server:** Gunicorn
+- **Rendering:** Python-Markdown, KaTeX, Highlight.js
 
 ## Installation
 
@@ -40,7 +41,7 @@ cp .env.example .env
 
 Edit `.env`:
 
-```env
+```bash
 SECRET_KEY=your-super-secret-key
 DATABASE_URL=sqlite:///2ez_exam.db
 FLASK_ENV=production
@@ -75,51 +76,49 @@ gunicorn wsgi:app
 
 ## Routes
 
-| URL | Description |
-|-----|-------------|
-| `/register` | Sign up |
-| `/login` | Sign in |
-| `/dashboard` | Home page |
-| `/exams` | Exam list |
-| `/reference` | Reference materials |
-| `/leaderboard` | Rankings |
-
-## Question File Format
-
-Questions can be uploaded via `.txt` file:
-
-```
-? Question text
-option A
-option B
-#correct option
-option D
-
-? Next question
-...
-```
-
-`#` marks the correct answer.
+|URL|Description|
+|---|---|
+|`/`|Home / Dashboard|
+|`/register`|Sign up|
+|`/login`|Sign in|
+|`/dashboard`|User dashboard|
+|`/exams`|Exam list|
+|`/vocab`|Vocabulary sets|
+|`/reference`|Reference materials|
+|`/leaderboard`|Rankings|
+|`/profile`|User profile|
+|`/settings`|User settings|
+|`/admin`|Admin panel|
 
 ## Features
 
-- 🔐 User authentication
-- 👑 Admin panel
+- 🔐 User authentication (register, login, logout)
+- 👑 Admin panel with user management
 - 📝 Exam creation and management
-- 📚 Reference materials section
-- 🎮 Duolingo-style quiz interface
-- ⚡ XP and level system
-- 🏆 Leaderboard (Top 20 / Admin sees all)
-- 🌙 Dark / Light mode toggle
-- 📱 Mobile responsive
 - 📂 Bulk question upload via `.txt`
+- 🎮 Duolingo-style quiz interface
+- 🔢 Math rendering with KaTeX (`$...$`)
+- 💻 Code highlighting with Highlight.js
+- 📖 Markdown support in questions and references
+- 📚 Reference materials section with markdown
+- 🔤 Vocabulary module (Flashcard + Quiz + TTS)
+- 📦 Bulk vocabulary upload via `.json`
+- ⚡ XP and level system (Rookie → Platinum)
+- 🏆 Leaderboard (Top 20 / Admin sees all)
+- 👤 User profiles with bio and social links
+- 🖼️ Avatar via URL
+- 🌙 Dark / Light mode toggle
+- 📱 Mobile responsive + PWA (installable)
 - 🔊 Sound effects and vibration feedback
+- ⌨️ Keyboard shortcuts (Space, Enter, ←, →)
+- 🔍 Question review navigation
+- 📊 Personal statistics dashboard
 
-## Version
+## Changelog
 
-Current version: **v0.6.0**
-
-### Changelog
+- **v0.9.0** — PWA support (manifest, service worker, icons)
+- **v0.8.0** — Markdown, KaTeX math, code highlighting
+- **v0.7.0** — Fullscreen mode, question review navigation
 - **v0.6.0** — Avatar support, question count selection, bug fixes
 - **v0.5.0** — Admin panel, user profiles, bio, social links
 - **v0.4.0** — Vocab module (Flashcard, Quiz, TTS)
