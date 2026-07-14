@@ -16,7 +16,18 @@ document.addEventListener("DOMContentLoaded", function () {
         : "bi bi-moon-fill";
   }
 
+  function syncThemeColor(theme) {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) return;
+    meta.setAttribute(
+      "content",
+      theme === "dark" ? "#1a2f38" : "#4a90d9"
+    );
+  }
+
+  // Sahifa yuklanganda
   syncIcon();
+  syncThemeColor(html.getAttribute("data-bs-theme"));
 
   if (btn) {
     btn.addEventListener("click", function () {
@@ -25,6 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
       html.setAttribute("data-bs-theme", next);
       localStorage.setItem("theme", next);
       syncIcon();
+      syncThemeColor(next);
     });
   }
 
