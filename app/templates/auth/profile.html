@@ -103,17 +103,15 @@
         </div>
         <div class="col-6 col-md-3">
           <div class="card border-0 shadow-sm text-center p-3">
-            <h3 class="fw-bold text-primary mb-0">{{ total_exams }}</h3>
-            <small class="text-muted">
-              <i class="bi bi-pencil-square"></i> Test
-            </small>
+            <h3 class="fw-bold text-danger mb-0">{{ current_user.streak }}</h3>
+            <small class="text-muted">🔥 Streak</small>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="card border-0 shadow-sm text-center p-3">
-            <h3 class="fw-bold text-primary mb-0">{{ total_correct }}</h3>
+            <h3 class="fw-bold text-primary mb-0">{{ total_exams }}</h3>
             <small class="text-muted">
-              <i class="bi bi-check-circle-fill text-success"></i> To'g'ri
+              <i class="bi bi-pencil-square"></i> Test
             </small>
           </div>
         </div>

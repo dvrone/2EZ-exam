@@ -51,11 +51,12 @@
                     {% endif %}
                   </div>
                 </div>
-                <!-- XP -->
+                <!-- XP + Streak -->
                 <div class="text-end">
-                  <span class="badge bg-warning text-dark">
+                  <span class="badge bg-warning text-dark d-block mb-1">
                     <i class="bi bi-lightning-charge-fill"></i> {{ user.xp }} XP
                   </span>
+                  {% if user.streak > 0 %}<span class="badge bg-danger d-block">🔥 {{ user.streak }} kun</span>{% endif %}
                 </div>
               </div>
             </div>

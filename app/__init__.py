@@ -6,7 +6,7 @@ from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_sqlalchemy import SQLAlchemy
 from markdown import markdown as md_to_html
 
@@ -64,6 +64,12 @@ def create_app():
     app.register_blueprint(exam_bp)
     app.register_blueprint(reference_bp)
     app.register_blueprint(vocab_bp)
+
+    @app.before_request
+    def update_user_streak():
+        if current_user.is_authenticated:
+            current_user.update_streak()
+            db.session.commit()
 
     @app.errorhandler(404)
     def page_not_found(e):

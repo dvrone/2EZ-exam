@@ -1,3 +1,5 @@
+from datetime import date
+
 from flask_login import UserMixin
 
 from app import bcrypt, db, login_manager
@@ -16,14 +18,34 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
-    avatar_url = db.Column(db.String(500), nullable=True)
     xp = db.Column(db.Integer, default=0)
     bio = db.Column(db.String(300), nullable=True)
     github = db.Column(db.String(100), nullable=True)
     telegram = db.Column(db.String(100), nullable=True)
     instagram = db.Column(db.String(100), nullable=True)
     website = db.Column(db.String(200), nullable=True)
+    avatar_url = db.Column(db.String(500), nullable=True)
+    streak = db.Column(db.Integer, default=0)
+    max_streak = db.Column(db.Integer, default=0)
+    last_active = db.Column(db.Date, nullable=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    def update_streak(self):
+        today = date.today()
+
+        if self.last_active is None:
+            self.streak = 1
+        elif self.last_active == today:
+            return  # Bugun allaqachon yangilangan
+        elif (today - self.last_active).days == 1:
+            self.streak += 1
+        else:
+            self.streak = 1  # Streak uzildi
+
+        self.last_active = today
+
+        if self.streak > (self.max_streak or 0):
+            self.max_streak = self.streak
 
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password).decode("utf-8")
