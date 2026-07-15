@@ -58,16 +58,26 @@ class User(db.Model, UserMixin):
 
     @property
     def level(self):
-        if self.xp < 100:
+        if self.xp < 500:
             return 1
-        elif self.xp < 300:
+        elif self.xp < 1500:
             return 2
-        elif self.xp < 600:
+        elif self.xp < 3500:
             return 3
-        elif self.xp < 1000:
+        elif self.xp < 7000:
             return 4
-        else:
+        elif self.xp < 13000:
             return 5
+        elif self.xp < 23000:
+            return 6
+        elif self.xp < 40000:
+            return 7
+        elif self.xp < 70000:
+            return 8
+        elif self.xp < 120000:
+            return 9
+        else:
+            return 10
 
     @property
     def level_name(self):
@@ -77,13 +87,18 @@ class User(db.Model, UserMixin):
             3: "Silver",
             4: "Gold",
             5: "Platinum",
+            6: "Diamond",
+            7: "Master",
+            8: "Grandmaster",
+            9: "Legend",
+            10: "Mythic",
         }
         return names[self.level]
 
     @property
     def xp_progress(self):
-        thresholds = [0, 100, 300, 600, 1000]
-        if self.level == 5:
+        thresholds = [0, 500, 1500, 3500, 7000, 13000, 23000, 40000, 70000, 120000]
+        if self.level == 10:
             return 100
         current = thresholds[self.level - 1]
         next_level = thresholds[self.level]
