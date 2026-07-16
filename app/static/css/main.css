@@ -343,3 +343,30 @@ code, pre {
 [data-bs-theme="dark"] #wordCard {
   background: #1a2f38;
 }
+
+[data-bs-theme="dark"] #wordCard.border-success-custom {
+  border: 2.5px solid #58cc02 !important;
+}
+
+[data-bs-theme="dark"] #wordCard.border-danger-custom {
+  border: 2.5px solid #ff4b4b !important;
+}
+
+/* ========================
+   Word card border feedback
+======================== */
+.border-success-custom {
+  border: 2.5px solid #58cc02 !important;
+}
+
+.border-danger-custom {
+  border: 2.5px solid #ff4b4b !important;
+}
+
+[data-bs-theme="dark"] .border-success-custom {
+  border: 2.5px solid #58cc02 !important;
+}
+
+[data-bs-theme="dark"] .border-danger-custom {
+  border: 2.5px solid #ff4b4b !important;
+}

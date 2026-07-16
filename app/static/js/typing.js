@@ -35,14 +35,14 @@ function playSound(type) {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.4);
     }
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function vibrate(type) {
   try {
     if (!navigator.vibrate) return;
     navigator.vibrate(type === "correct" ? 100 : [100, 50, 100]);
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function updateProgress() {
@@ -74,6 +74,7 @@ function renderWord() {
   const card = document.getElementById("wordCard");
   card.style.border = "";
   card.style.borderRadius = "16px";
+  card.classList.remove("border-success-custom", "border-danger-custom");
 
   updateProgress();
 
@@ -109,7 +110,8 @@ function checkAnswer() {
 
   if (isCorrect) {
     correct++;
-    card.style.border = "2.5px solid #58cc02";
+    card.classList.remove("border-danger-custom");
+    card.classList.add("border-success-custom");
     card.style.borderRadius = "16px";
     answerInput.classList.add("is-valid");
     document.getElementById("resultText").textContent = "To'g'ri!";
@@ -121,7 +123,8 @@ function checkAnswer() {
     vibrate("correct");
   } else {
     wrong++;
-    card.style.border = "2.5px solid #ff4b4b";
+    card.classList.remove("border-success-custom");
+    card.classList.add("border-danger-custom");
     card.style.borderRadius = "16px";
     answerInput.classList.add("is-invalid");
     document.getElementById("resultText").textContent = "Noto'g'ri!";
@@ -179,7 +182,7 @@ function showFinalResult() {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.5);
     }
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function restartTyping() {

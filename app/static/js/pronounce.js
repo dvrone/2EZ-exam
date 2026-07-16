@@ -27,7 +27,7 @@ function speakWord() {
     utterance.rate = 0.8;
     utterance.pitch = 1;
     window.speechSynthesis.speak(utterance);
-  } catch (e) { }
+  } catch (e) {}
 }
 
 function playSound(type) {
@@ -53,14 +53,14 @@ function playSound(type) {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.4);
     }
-  } catch (e) { }
+  } catch (e) {}
 }
 
 function vibrate(type) {
   try {
     if (!navigator.vibrate) return;
     navigator.vibrate(type === "correct" ? 100 : [100, 50, 100]);
-  } catch (e) { }
+  } catch (e) {}
 }
 
 function updateProgress() {
@@ -72,16 +72,15 @@ function updateProgress() {
 function renderWord() {
   const w = words[current];
 
-  // So'z va tarjima
   document.getElementById("wordText").textContent = w.word;
   document.getElementById("translationText").textContent = w.translation;
 
   // Border reset
   const card = document.getElementById("wordCard");
   card.style.border = "";
-  card.style.transition = "border 0.3s ease";
+  card.classList.remove("border-success-custom", "border-danger-custom");
 
-  // Elementlarni ko'rsatish/yashirish
+  // Elementlarni reset
   document.getElementById("resultSection").classList.add("d-none");
   document.getElementById("actionBtns").classList.add("d-none");
   document.getElementById("micSection").classList.remove("d-none");
@@ -95,8 +94,6 @@ function renderWord() {
 
   document.getElementById("micHint").textContent =
     "Mikrofon tugmasini bosib so'zni ayting";
-
-  // Result matnlarni tozalash
   document.getElementById("resultText").textContent = "";
   document.getElementById("spokenText").textContent = "";
 
@@ -169,17 +166,14 @@ function startListening() {
 
 function stopListening() {
   if (recognition) {
-    try { recognition.stop(); } catch (e) { }
+    try { recognition.stop(); } catch (e) {}
     recognition = null;
   }
   isListening = false;
 }
 
 function showResult(isCorrect, spoken) {
-  // Mikrofon yashirish
   document.getElementById("micSection").classList.add("d-none");
-
-  // Natija ko'rsatish
   document.getElementById("resultSection").classList.remove("d-none");
   document.getElementById("actionBtns").classList.remove("d-none");
   document.getElementById("spokenText").textContent = spoken || "—";
@@ -188,21 +182,27 @@ function showResult(isCorrect, spoken) {
 
   if (isCorrect) {
     correct++;
-    card.style.border = "2.5px solid #58cc02";
-    card.style.borderRadius = "16px";
+    card.classList.remove("border-danger-custom");
+    card.classList.add("border-success-custom");
     document.getElementById("resultText").textContent = "To'g'ri talaffuz!";
     document.getElementById("resultText").className = "fw-bold text-success";
     playSound("correct");
     vibrate("correct");
   } else {
     wrong++;
-    card.style.border = "2.5px solid #ff4b4b";
-    card.style.borderRadius = "16px";
-    document.getElementById("resultText").textContent = "Noto'g'ri. Qayta urinib ko'ring!";
+    card.classList.remove("border-success-custom");
+    card.classList.add("border-danger-custom");
+    document.getElementById("resultText").textContent =
+      "Noto'g'ri. Qayta urinib ko'ring!";
     document.getElementById("resultText").className = "fw-bold text-danger";
     playSound("wrong");
     vibrate("wrong");
   }
+}
+
+function retryWord() {
+  stopListening();
+  renderWord();
 }
 
 function nextWord() {
@@ -238,7 +238,7 @@ function showFinalResult() {
       osc.start(ctx.currentTime + i * 0.15);
       osc.stop(ctx.currentTime + i * 0.15 + 0.3);
     });
-  } catch (e) { }
+  } catch (e) {}
 }
 
 function restartPronounce() {
@@ -255,13 +255,6 @@ function restartPronounce() {
   renderWord();
 }
 
-// Boshlash
 if (checkSupport()) {
-  renderWord();
-}
-
-function retryWord() {
-  stopListening();
-  // Joriy so'zni qayta ko'rsatish — current o'zgarmaydi
   renderWord();
 }
