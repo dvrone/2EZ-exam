@@ -27,7 +27,7 @@ function speakWord() {
     utterance.rate = 0.8;
     utterance.pitch = 1;
     window.speechSynthesis.speak(utterance);
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function playSound(type) {
@@ -53,14 +53,14 @@ function playSound(type) {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.4);
     }
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function vibrate(type) {
   try {
     if (!navigator.vibrate) return;
     navigator.vibrate(type === "correct" ? 100 : [100, 50, 100]);
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function updateProgress() {
@@ -169,7 +169,7 @@ function startListening() {
 
 function stopListening() {
   if (recognition) {
-    try { recognition.stop(); } catch (e) {}
+    try { recognition.stop(); } catch (e) { }
     recognition = null;
   }
   isListening = false;
@@ -189,6 +189,7 @@ function showResult(isCorrect, spoken) {
   if (isCorrect) {
     correct++;
     card.style.border = "2.5px solid #58cc02";
+    card.style.borderRadius = "16px";
     document.getElementById("resultText").textContent = "To'g'ri talaffuz!";
     document.getElementById("resultText").className = "fw-bold text-success";
     playSound("correct");
@@ -196,8 +197,8 @@ function showResult(isCorrect, spoken) {
   } else {
     wrong++;
     card.style.border = "2.5px solid #ff4b4b";
-    document.getElementById("resultText").textContent =
-      "Noto'g'ri. Qayta urinib ko'ring!";
+    card.style.borderRadius = "16px";
+    document.getElementById("resultText").textContent = "Noto'g'ri. Qayta urinib ko'ring!";
     document.getElementById("resultText").className = "fw-bold text-danger";
     playSound("wrong");
     vibrate("wrong");
@@ -237,7 +238,7 @@ function showFinalResult() {
       osc.start(ctx.currentTime + i * 0.15);
       osc.stop(ctx.currentTime + i * 0.15 + 0.3);
     });
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function restartPronounce() {

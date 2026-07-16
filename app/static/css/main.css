@@ -335,3 +335,7 @@ code, pre {
 .slide-in {
   animation: slideIn 0.3s ease forwards;
 }
+
+#wordCard {
+  transition: border 0.3s ease;
+}
