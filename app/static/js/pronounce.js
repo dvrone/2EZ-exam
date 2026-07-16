@@ -204,10 +204,8 @@ function showResult(isCorrect, spoken) {
   }
 }
 
-function nextWord(skip) {
-  // Tinglashni to'xtatish
+function nextWord() {
   stopListening();
-
   current++;
   if (current >= words.length) {
     showFinalResult();
@@ -258,5 +256,11 @@ function restartPronounce() {
 
 // Boshlash
 if (checkSupport()) {
+  renderWord();
+}
+
+function retryWord() {
+  stopListening();
+  // Joriy so'zni qayta ko'rsatish — current o'zgarmaydi
   renderWord();
 }
