@@ -6,7 +6,6 @@ let wrong = 0;
 let recognition = null;
 let isListening = false;
 
-// Web Speech API tekshirish
 function checkSupport() {
   if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
     document.getElementById("notSupported").classList.remove("d-none");
@@ -16,7 +15,6 @@ function checkSupport() {
   return true;
 }
 
-// TTS — so'zni eshitish
 function speakWord() {
   try {
     if (!window.speechSynthesis) return;
@@ -26,7 +24,7 @@ function speakWord() {
     utterance.rate = 0.8;
     utterance.pitch = 1;
     window.speechSynthesis.speak(utterance);
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function playSound(type) {
@@ -53,14 +51,14 @@ function playSound(type) {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.4);
     }
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function vibrate(type) {
   try {
     if (!navigator.vibrate) return;
     navigator.vibrate(type === "correct" ? 100 : [100, 50, 100]);
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function updateProgress() {
@@ -73,6 +71,11 @@ function renderWord() {
   const w = words[current];
   document.getElementById("wordText").textContent = w.word;
   document.getElementById("translationText").textContent = w.translation;
+
+  // Border reset
+  const card = document.getElementById("wordCard");
+  card.style.border = "";
+  card.style.transition = "border 0.3s ease";
 
   // Reset
   document.getElementById("resultSection").classList.add("d-none");
@@ -157,16 +160,20 @@ function showResult(isCorrect, spoken) {
   document.getElementById("actionBtns").classList.remove("d-none");
   document.getElementById("spokenText").textContent = spoken || "—";
 
+  const card = document.getElementById("wordCard");
+
   if (isCorrect) {
     correct++;
-    document.getElementById("resultIcon").textContent = "✅";
+    card.style.border = "2.5px solid #58cc02";
+    document.getElementById("resultIcon").textContent = "";
     document.getElementById("resultText").textContent = "To'g'ri talaffuz!";
     document.getElementById("resultText").className = "fw-bold text-success";
     playSound("correct");
     vibrate("correct");
   } else {
     wrong++;
-    document.getElementById("resultIcon").textContent = "❌";
+    card.style.border = "2.5px solid #ff4b4b";
+    document.getElementById("resultIcon").textContent = "";
     document.getElementById("resultText").textContent = "Noto'g'ri. Qayta urinib ko'ring!";
     document.getElementById("resultText").className = "fw-bold text-danger";
     playSound("wrong");
@@ -205,7 +212,7 @@ function showFinalResult() {
       osc.start(ctx.currentTime + i * 0.15);
       osc.stop(ctx.currentTime + i * 0.15 + 0.3);
     });
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function restartPronounce() {
@@ -222,7 +229,6 @@ function restartPronounce() {
   renderWord();
 }
 
-// Boshlash
 if (checkSupport()) {
   renderWord();
 }
