@@ -71,6 +71,10 @@ function renderWord() {
   checkBtn.style.background = "#4a90d9";
   checkBtn.style.borderColor = "#4a90d9";
 
+  const card = document.getElementById("wordCard");
+  card.style.border = "";
+  card.style.borderRadius = "16px";
+
   updateProgress();
 
   // Avtomatik fokus
@@ -96,6 +100,7 @@ function checkAnswer() {
   }
 
   const isCorrect = userAnswer === correctAnswer;
+  const card = document.getElementById("wordCard");
 
   answerInput.disabled = true;
   checkBtn.classList.add("d-none");
@@ -104,8 +109,9 @@ function checkAnswer() {
 
   if (isCorrect) {
     correct++;
+    card.style.border = "2.5px solid #58cc02";
+    card.style.borderRadius = "16px";
     answerInput.classList.add("is-valid");
-    document.getElementById("resultIcon").textContent = "✅";
     document.getElementById("resultText").textContent = "To'g'ri!";
     document.getElementById("resultText").className = "fw-bold text-success";
     document.getElementById("correctAnswer").textContent = "";
@@ -115,8 +121,9 @@ function checkAnswer() {
     vibrate("correct");
   } else {
     wrong++;
+    card.style.border = "2.5px solid #ff4b4b";
+    card.style.borderRadius = "16px";
     answerInput.classList.add("is-invalid");
-    document.getElementById("resultIcon").textContent = "❌";
     document.getElementById("resultText").textContent = "Noto'g'ri!";
     document.getElementById("resultText").className = "fw-bold text-danger";
     document.getElementById("correctAnswer").textContent =
@@ -127,7 +134,6 @@ function checkAnswer() {
     vibrate("wrong");
   }
 
-  // Oxirgi so'z bo'lsa tugma matnini o'zgartirish
   if (current === words.length - 1) {
     continueBtn.innerHTML = 'Yakunlash <i class="bi bi-check-lg"></i>';
   }
