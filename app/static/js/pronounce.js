@@ -7,7 +7,10 @@ let recognition = null;
 let isListening = false;
 
 function checkSupport() {
-  if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
+  if (
+    !("webkitSpeechRecognition" in window) &&
+    !("SpeechRecognition" in window)
+  ) {
     document.getElementById("notSupported").classList.remove("d-none");
     document.getElementById("micSection").classList.add("d-none");
     return false;
@@ -24,7 +27,7 @@ function speakWord() {
     utterance.rate = 0.8;
     utterance.pitch = 1;
     window.speechSynthesis.speak(utterance);
-  } catch (e) { }
+  } catch (e) {}
 }
 
 function playSound(type) {
@@ -34,7 +37,6 @@ function playSound(type) {
     const gain = ctx.createGain();
     osc.connect(gain);
     gain.connect(ctx.destination);
-
     if (type === "correct") {
       osc.frequency.setValueAtTime(523, ctx.currentTime);
       osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
@@ -51,14 +53,14 @@ function playSound(type) {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.4);
     }
-  } catch (e) { }
+  } catch (e) {}
 }
 
 function vibrate(type) {
   try {
     if (!navigator.vibrate) return;
     navigator.vibrate(type === "correct" ? 100 : [100, 50, 100]);
-  } catch (e) { }
+  } catch (e) {}
 }
 
 function updateProgress() {
@@ -69,6 +71,8 @@ function updateProgress() {
 
 function renderWord() {
   const w = words[current];
+
+  // So'z va tarjima
   document.getElementById("wordText").textContent = w.word;
   document.getElementById("translationText").textContent = w.translation;
 
@@ -77,14 +81,24 @@ function renderWord() {
   card.style.border = "";
   card.style.transition = "border 0.3s ease";
 
-  // Reset
+  // Elementlarni ko'rsatish/yashirish
   document.getElementById("resultSection").classList.add("d-none");
   document.getElementById("actionBtns").classList.add("d-none");
-  document.getElementById("micBtn").classList.remove("btn-danger");
-  document.getElementById("micBtn").classList.add("btn-success");
-  document.getElementById("micBtn").innerHTML = '<i class="bi bi-mic-fill"></i>';
-  document.getElementById("micHint").textContent = "Mikrofon tugmasini bosib so'zni ayting";
   document.getElementById("micSection").classList.remove("d-none");
+
+  // Mikrofon tugmasini reset
+  const micBtn = document.getElementById("micBtn");
+  micBtn.classList.remove("btn-danger");
+  micBtn.classList.add("btn-success");
+  micBtn.innerHTML = '<i class="bi bi-mic-fill"></i>';
+  micBtn.disabled = false;
+
+  document.getElementById("micHint").textContent =
+    "Mikrofon tugmasini bosib so'zni ayting";
+
+  // Result matnlarni tozalash
+  document.getElementById("resultText").textContent = "";
+  document.getElementById("spokenText").textContent = "";
 
   updateProgress();
 }
@@ -105,27 +119,34 @@ function startListening() {
   recognition.maxAlternatives = 5;
 
   isListening = true;
+
   const micBtn = document.getElementById("micBtn");
   micBtn.classList.remove("btn-success");
   micBtn.classList.add("btn-danger");
   micBtn.innerHTML = '<i class="bi bi-stop-fill"></i>';
-  document.getElementById("micHint").textContent = "Tinglayapman... So'zni ayting";
+  document.getElementById("micHint").textContent =
+    "Tinglayapman... So'zni ayting";
 
   recognition.onresult = (event) => {
+    isListening = false;
     const results = Array.from(event.results[0]).map((r) =>
       r.transcript.trim().toLowerCase()
     );
-
     const target = words[current].word.toLowerCase().trim();
     const isCorrect = results.some(
       (r) => r === target || r.includes(target) || target.includes(r)
     );
-
     showResult(isCorrect, results[0]);
   };
 
   recognition.onerror = (event) => {
+    isListening = false;
     stopListening();
+    const micBtn = document.getElementById("micBtn");
+    micBtn.classList.remove("btn-danger");
+    micBtn.classList.add("btn-success");
+    micBtn.innerHTML = '<i class="bi bi-mic-fill"></i>';
+
     if (event.error === "no-speech") {
       document.getElementById("micHint").textContent =
         "Ovoz eshitilmadi. Qayta urinib ko'ring.";
@@ -148,14 +169,17 @@ function startListening() {
 
 function stopListening() {
   if (recognition) {
-    recognition.stop();
+    try { recognition.stop(); } catch (e) {}
     recognition = null;
   }
   isListening = false;
 }
 
 function showResult(isCorrect, spoken) {
+  // Mikrofon yashirish
   document.getElementById("micSection").classList.add("d-none");
+
+  // Natija ko'rsatish
   document.getElementById("resultSection").classList.remove("d-none");
   document.getElementById("actionBtns").classList.remove("d-none");
   document.getElementById("spokenText").textContent = spoken || "—";
@@ -165,7 +189,6 @@ function showResult(isCorrect, spoken) {
   if (isCorrect) {
     correct++;
     card.style.border = "2.5px solid #58cc02";
-    document.getElementById("resultIcon").textContent = "";
     document.getElementById("resultText").textContent = "To'g'ri talaffuz!";
     document.getElementById("resultText").className = "fw-bold text-success";
     playSound("correct");
@@ -173,8 +196,8 @@ function showResult(isCorrect, spoken) {
   } else {
     wrong++;
     card.style.border = "2.5px solid #ff4b4b";
-    document.getElementById("resultIcon").textContent = "";
-    document.getElementById("resultText").textContent = "Noto'g'ri. Qayta urinib ko'ring!";
+    document.getElementById("resultText").textContent =
+      "Noto'g'ri. Qayta urinib ko'ring!";
     document.getElementById("resultText").className = "fw-bold text-danger";
     playSound("wrong");
     vibrate("wrong");
@@ -182,6 +205,9 @@ function showResult(isCorrect, spoken) {
 }
 
 function nextWord(skip) {
+  // Tinglashni to'xtatish
+  stopListening();
+
   current++;
   if (current >= words.length) {
     showFinalResult();
@@ -191,8 +217,9 @@ function nextWord(skip) {
 }
 
 function showFinalResult() {
-  document.querySelector(".card").classList.add("d-none");
+  document.getElementById("wordCard").classList.add("d-none");
   document.getElementById("actionBtns").classList.add("d-none");
+  document.getElementById("micSection").classList.add("d-none");
   document.getElementById("progressBar").style.width = "100%";
 
   document.getElementById("correctCount").textContent = correct;
@@ -212,7 +239,7 @@ function showFinalResult() {
       osc.start(ctx.currentTime + i * 0.15);
       osc.stop(ctx.currentTime + i * 0.15 + 0.3);
     });
-  } catch (e) { }
+  } catch (e) {}
 }
 
 function restartPronounce() {
@@ -222,13 +249,14 @@ function restartPronounce() {
 
   words.sort(() => Math.random() - 0.5);
 
-  document.querySelector(".card").classList.remove("d-none");
+  document.getElementById("wordCard").classList.remove("d-none");
   document.getElementById("finalResult").classList.add("d-none");
   document.getElementById("progressBar").style.width = "0%";
 
   renderWord();
 }
 
+// Boshlash
 if (checkSupport()) {
   renderWord();
 }
