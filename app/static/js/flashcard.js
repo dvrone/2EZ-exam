@@ -1,11 +1,43 @@
 const words = JSON.parse(document.getElementById("wordsData").textContent);
+const setId = document.getElementById("setId").textContent.trim();
+const STORAGE_KEY = `flashcard_progress_${setId}`;
 
 let current = 0;
 let known = 0;
 let unknown = 0;
 let flipped = false;
 
-// TTS — xavfsiz
+// Progress yuklash
+function loadProgress() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const data = JSON.parse(saved);
+      if (data.current < words.length) {
+        return data;
+      }
+    }
+  } catch (e) { }
+  return null;
+}
+
+// Progress saqlash
+function saveProgress() {
+  try {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ current, known, unknown })
+    );
+  } catch (e) { }
+}
+
+// Progress o'chirish
+function clearProgress() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (e) { }
+}
+
 function speak(text) {
   try {
     if (!window.speechSynthesis) return;
@@ -15,7 +47,7 @@ function speak(text) {
     utterance.rate = 0.9;
     utterance.pitch = 1;
     window.speechSynthesis.speak(utterance);
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function playSound(type) {
@@ -25,6 +57,7 @@ function playSound(type) {
     const gain = ctx.createGain();
     osc.connect(gain);
     gain.connect(ctx.destination);
+
     if (type === "correct") {
       osc.frequency.setValueAtTime(523, ctx.currentTime);
       osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
@@ -40,20 +73,21 @@ function playSound(type) {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.3);
     }
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function vibrate(type) {
   try {
     if (!navigator.vibrate) return;
     navigator.vibrate(type === "correct" ? 100 : [100, 50, 100]);
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function updateProgress() {
   const percent = (current / words.length) * 100;
   document.getElementById("progressBar").style.width = percent + "%";
   document.getElementById("currentNum").textContent = current + 1;
+  saveProgress();
 }
 
 function renderCard() {
@@ -69,7 +103,6 @@ function renderCard() {
   document.getElementById("translationText").textContent = w.translation;
   document.getElementById("exampleText").textContent = w.example || "";
 
-  // Front ko'rsatish, back yashirish
   document.getElementById("cardFront").style.display = "block";
   document.getElementById("cardBack").style.display = "none";
   document.getElementById("actionBtns").classList.add("d-none");
@@ -82,17 +115,16 @@ function flipCard() {
   if (flipped) return;
   flipped = true;
 
+  const card = document.getElementById("flashcard");
   document.getElementById("cardFront").style.display = "none";
   document.getElementById("cardBack").style.display = "block";
   document.getElementById("actionBtns").classList.remove("d-none");
 
-  document.getElementById("flashcard").style.borderColor = "#4a90d9";
+  card.style.borderColor = "#4a90d9";
 }
 
 function nextWord(didKnow) {
-  try {
-    window.speechSynthesis.cancel();
-  } catch (e) {}
+  try { window.speechSynthesis.cancel(); } catch (e) { }
 
   if (didKnow) {
     known++;
@@ -107,6 +139,7 @@ function nextWord(didKnow) {
   current++;
 
   if (current >= words.length) {
+    clearProgress();
     showResult();
   } else {
     renderCard();
@@ -117,6 +150,7 @@ function showResult() {
   document.getElementById("flashcard").classList.add("d-none");
   document.getElementById("actionBtns").classList.add("d-none");
   document.getElementById("progressBar").style.width = "100%";
+
   document.getElementById("knownCount").textContent = known;
   document.getElementById("unknownCount").textContent = unknown;
   document.getElementById("resultDiv").classList.remove("d-none");
@@ -134,20 +168,25 @@ function showResult() {
       osc.start(ctx.currentTime + i * 0.15);
       osc.stop(ctx.currentTime + i * 0.15 + 0.3);
     });
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function restartFlashcard() {
+  clearProgress();
   current = 0;
   known = 0;
   unknown = 0;
+
   words.sort(() => Math.random() - 0.5);
+
   document.getElementById("flashcard").classList.remove("d-none");
   document.getElementById("resultDiv").classList.add("d-none");
   document.getElementById("progressBar").style.width = "0%";
+
   renderCard();
 }
 
+// Klaviatura
 document.addEventListener("keydown", (e) => {
   if (e.key === " " || e.key === "Enter") {
     e.preventDefault();
@@ -158,5 +197,20 @@ document.addEventListener("keydown", (e) => {
     if (flipped) nextWord(true);
   }
 });
+
+// Boshlash — progress tekshirish
+const saved = loadProgress();
+if (saved && saved.current > 0) {
+  const resume = confirm(
+    `Siz ${saved.current}/${words.length} so'zgacha ko'rgansiz. Davom ettirasizmi?`
+  );
+  if (resume) {
+    current = saved.current;
+    known = saved.known;
+    unknown = saved.unknown;
+  } else {
+    clearProgress();
+  }
+}
 
 renderCard();
