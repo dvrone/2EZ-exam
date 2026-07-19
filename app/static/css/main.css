@@ -11,7 +11,6 @@
   --warning: #ffc800;
 }
 
-
 /* ========================
    Global
 ======================== */
@@ -20,7 +19,8 @@ body {
   --bs-body-font-family: "Google Sans", "Work Sans", sans-serif;
 }
 
-code, pre {
+code,
+pre {
   font-family: "Google Sans Code", monospace;
 }
 
@@ -296,44 +296,16 @@ code, pre {
 [data-bs-theme="dark"] #questionText code {
   background: rgba(255, 255, 255, 0.1);
 }
-.min-width-0 {
-  min-width: 0;
-}
+
 /* ========================
-   Animations
+   Word card border feedback
 ======================== */
-@keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  20% {
-    transform: translateX(-8px);
-  }
-  40% {
-    transform: translateX(8px);
-  }
-  60% {
-    transform: translateX(-5px);
-  }
-  80% {
-    transform: translateX(5px);
-  }
+.border-success-custom {
+  border: 2.5px solid var(--success) !important;
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.slide-in {
-  animation: slideIn 0.3s ease forwards;
+.border-danger-custom {
+  border: 2.5px solid var(--danger) !important;
 }
 
 #wordCard {
@@ -344,29 +316,52 @@ code, pre {
   background: #1a2f38;
 }
 
-[data-bs-theme="dark"] #wordCard.border-success-custom {
-  border: 2.5px solid #58cc02 !important;
-}
-
-[data-bs-theme="dark"] #wordCard.border-danger-custom {
-  border: 2.5px solid #ff4b4b !important;
+/* ========================
+   Utilities
+======================== */
+.min-width-0 {
+  min-width: 0;
 }
 
 /* ========================
-   Word card border feedback
+   Animations
 ======================== */
-.border-success-custom {
-  border: 2.5px solid #58cc02 !important;
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-8px);
+  }
+
+  40% {
+    transform: translateX(8px);
+  }
+
+  60% {
+    transform: translateX(-5px);
+  }
+
+  80% {
+    transform: translateX(5px);
+  }
 }
 
-.border-danger-custom {
-  border: 2.5px solid #ff4b4b !important;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-[data-bs-theme="dark"] .border-success-custom {
-  border: 2.5px solid #58cc02 !important;
-}
-
-[data-bs-theme="dark"] .border-danger-custom {
-  border: 2.5px solid #ff4b4b !important;
+.slide-in {
+  animation: slideIn 0.3s ease forwards;
 }
