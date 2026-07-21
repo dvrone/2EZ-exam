@@ -1,11 +1,12 @@
 import json
 import random
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import (Blueprint, flash, jsonify, redirect, render_template,
+                   request, url_for)
 from flask_login import current_user, login_required
 
 from app import db
-from app.models import Vocab, VocabSet
+from app.models import StudyProgress, Vocab, VocabSet
 
 vocab_bp = Blueprint("vocab", __name__)
 
@@ -306,3 +307,97 @@ def typing(set_id):
     words = list(vocab_set.words)
     random.shuffle(words)
     return render_template("vocab/typing.html", vocab_set=vocab_set, words=words)
+
+
+# Learn sahifasi
+@vocab_bp.route("/vocab/<int:set_id>/learn")
+@login_required
+def learn(set_id):
+    vocab_set = VocabSet.query.get_or_404(set_id)
+
+    if len(vocab_set.words) < 1:
+        flash("Bu to'plamda so'zlar yo'q!", "warning")
+        return redirect(url_for("vocab.detail_set", set_id=set_id))
+
+    # So'zlarni order_index bo'yicha tartiblash
+    words = sorted(vocab_set.words, key=lambda w: w.order_index)
+
+    return render_template("vocab/learn.html", vocab_set=vocab_set, words=words)
+
+
+# Progress saqlash API
+@vocab_bp.route("/vocab/<int:set_id>/learn/progress", methods=["POST"])
+@login_required
+def save_progress(set_id):
+    data = request.get_json()
+    vocab_id = data.get("vocab_id")
+    current_step = data.get("current_step", "flashcard")
+
+    if not vocab_id:
+        return jsonify({"error": "vocab_id kerak"}), 400
+
+    progress = StudyProgress.query.filter_by(
+        user_id=current_user.id,
+        set_id=set_id,
+        vocab_id=vocab_id,
+    ).first()
+
+    if progress:
+        progress.current_step = current_step
+        progress.completed = current_step == "completed"
+    else:
+        progress = StudyProgress(
+            user_id=current_user.id,
+            set_id=set_id,
+            vocab_id=vocab_id,
+            current_step=current_step,
+            completed=current_step == "completed",
+        )
+        db.session.add(progress)
+
+    db.session.commit()
+    return jsonify({"ok": True})
+
+
+# Joriy holatni olish API
+@vocab_bp.route("/vocab/<int:set_id>/learn/state")
+@login_required
+def get_learn_state(set_id):
+    vocab_set = VocabSet.query.get_or_404(set_id)
+    words = sorted(vocab_set.words, key=lambda w: w.order_index)
+
+    # Barcha progresslarni olish
+    all_progress = {
+        p.vocab_id: p
+        for p in StudyProgress.query.filter_by(
+            user_id=current_user.id,
+            set_id=set_id,
+        ).all()
+    }
+
+    # Birinchi tugallanmagan so'zni topish
+    resume_word_id = None
+    resume_step = "flashcard"
+    completed_count = 0
+
+    for word in words:
+        p = all_progress.get(word.id)
+        if p and p.completed:
+            completed_count += 1
+        elif p and not p.completed:
+            resume_word_id = word.id
+            resume_step = p.current_step
+            break
+        else:
+            if resume_word_id is None:
+                resume_word_id = word.id
+                resume_step = "flashcard"
+
+    return jsonify(
+        {
+            "resume_word_id": resume_word_id,
+            "resume_step": resume_step,
+            "completed_count": completed_count,
+            "total": len(words),
+        }
+    )

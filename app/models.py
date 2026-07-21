@@ -177,7 +177,9 @@ class VocabSet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
+    order_index = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
     words = db.relationship("Vocab", backref="set", cascade="all, delete-orphan")
 
@@ -193,10 +195,35 @@ class Vocab(db.Model):
     word = db.Column(db.String(200), nullable=False)
     translation = db.Column(db.String(200), nullable=False)
     example = db.Column(db.Text, nullable=True)
-    category = db.Column(
-        db.String(50), nullable=True
-    )  # noun, verb, adj, adv, phrase...
+    category = db.Column(db.String(50), nullable=True)
+    ipa = db.Column(db.String(100), nullable=True)
+    order_index = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
     def __repr__(self):
         return f"<Vocab {self.word}>"
+
+
+class StudyProgress(db.Model):
+    __tablename__ = "study_progress"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    set_id = db.Column(db.Integer, db.ForeignKey("vocab_sets.id"), nullable=False)
+    vocab_id = db.Column(db.Integer, db.ForeignKey("vocab.id"), nullable=False)
+    current_step = db.Column(db.String(20), default="flashcard")
+    completed = db.Column(db.Boolean, default=False)
+    updated_at = db.Column(
+        db.DateTime, server_default=db.func.now(), onupdate=db.func.now()
+    )
+
+    user = db.relationship("User", backref="study_progress")
+    vocab = db.relationship("Vocab", backref="progress")
+
+    __table_args__ = (
+        db.UniqueConstraint("user_id", "set_id", "vocab_id", name="unique_progress"),
+    )
+
+    def __repr__(self):
+        return f"<StudyProgress user={self.user_id} vocab={self.vocab_id} step={self.current_step}>"
