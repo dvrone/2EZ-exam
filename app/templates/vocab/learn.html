@@ -26,15 +26,14 @@
   </script>
 
   <div class="row justify-content-center">
-    <div class="col-md-7">
+    <div class="col-lg-7 col-md-8">
 
-      <!-- Top bar -->
-      <div class="d-flex align-items-center gap-3 mb-3">
+      <div class="d-flex align-items-center gap-3 mb-4">
         <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
            class="text-muted text-decoration-none fs-5">
           <i class="bi bi-x-lg"></i>
         </a>
-        <div class="progress flex-grow-1" style="height: 12px; border-radius: 10px;">
+        <div class="progress flex-grow-1" style="height: 10px; border-radius: 999px;">
           <div class="progress-bar progress-bar-custom" id="progressBar" style="width: 0%;"></div>
         </div>
         <span class="text-muted small">
@@ -42,133 +41,53 @@
         </span>
       </div>
 
-      <!-- Step indicator -->
-      <div class="d-flex justify-content-center gap-2 mb-4" id="stepIndicator">
-        <span class="badge" id="step-flashcard">
-          <i class="bi bi-lightning-charge-fill"></i> Flashcard
-        </span>
-        <span class="badge" id="step-quiz">
-          <i class="bi bi-question-circle"></i> Quiz
-        </span>
-        <span class="badge" id="step-pronunciation">
-          <i class="bi bi-mic-fill"></i> Talaffuz
-        </span>
-        <span class="badge" id="step-writing">
-          <i class="bi bi-keyboard"></i> Yozish
-        </span>
+      <div class="text-center mb-4">
+        <h2 class="learn-header mb-2">Learn</h2>
+        <p class="learn-subtitle mb-0">You are now learning a new word.</p>
       </div>
 
-      <!-- Karta -->
       <div id="learnCard"
-           class="card border-0 shadow-sm p-4 mb-4"
-           style="min-height: 320px">
-
-        <!-- Flashcard bosqichi -->
-        <div id="stepFlashcard" class="text-center">
-          <p class="text-muted small mb-2">So'zni o'rganing</p>
-          <h2 class="fw-bold mb-1" id="fc-word"></h2>
-          <p class="text-muted small mb-1" id="fc-ipa"></p>
-          <span class="badge bg-secondary mb-3" id="fc-category"></span>
-          <button onclick="speakWord()"
-                  class="btn btn-outline-primary btn-sm d-block mx-auto mb-3">
-            <i class="bi bi-volume-up-fill"></i> Eshitish
-          </button>
-          <div id="fc-back" class="d-none">
-            <hr>
-            <h4 class="text-primary fw-bold mb-2" id="fc-translation"></h4>
-            <p class="text-muted fst-italic small" id="fc-example"></p>
+           class="learn-intro-card card border-0 p-4 p-md-5 mb-4">
+        <div class="text-center">
+          <p class="learn-intro-label">New word</p>
+          <h1 class="learn-word" id="learnWord"></h1>
+          <p class="learn-meta" id="learnCategory"></p>
+          <div class="learn-actions">
+            <button type="button"
+                    onclick="event.stopPropagation(); speakWord()"
+                    class="btn btn-outline-primary btn-sm learn-pronounce-btn">
+              <i class="bi bi-volume-up-fill"></i> Pronounce
+            </button>
           </div>
-          <div id="fc-front-hint" class="text-muted small mt-3">
+          <p class="learn-translation d-none" id="learnTranslation"></p>
+          <p class="learn-example d-none" id="learnExample"></p>
+          <p class="learn-hint" id="learnHint">
             <i class="bi bi-hand-index-thumb"></i> Kartani bosib tarjimani ko'ring
-          </div>
+          </p>
         </div>
-
-        <!-- Quiz bosqichi -->
-        <div id="stepQuiz" class="d-none">
-          <p class="text-muted small mb-2">To'g'ri tarjimani tanlang</p>
-          <h4 class="fw-bold mb-4" id="quiz-word"></h4>
-          <div id="quiz-options" class="d-flex flex-column gap-3"></div>
-        </div>
-
-        <!-- Pronunciation bosqichi -->
-        <div id="stepPronunciation" class="text-center d-none">
-          <p class="text-muted small mb-2">Quyidagi so'zni talaffuz qiling</p>
-          <h2 class="fw-bold mb-1" id="pr-word"></h2>
-          <p class="text-muted small mb-3" id="pr-ipa"></p>
-          <button onclick="speakWord()" class="btn btn-outline-primary btn-sm mb-4">
-            <i class="bi bi-volume-up-fill"></i> Eshitish
-          </button>
-          <div id="pr-mic">
-            <button id="micBtn"
-                    class="btn btn-success btn-lg rounded-circle mb-3"
-                    style="width: 80px;
-                           height: 80px;
-                           font-size: 1.8rem"
-                    onclick="startListening()">
-              <i class="bi bi-mic-fill"></i>
-            </button>
-            <p class="text-muted small" id="micHint">Mikrofon tugmasini bosib so'zni ayting</p>
-            <p class="text-muted" style="font-size: 0.75rem;">
-              <i class="bi bi-info-circle"></i> Chrome brauzerida eng yaxshi ishlaydi
-            </p>
-          </div>
-          <div id="pr-result" class="d-none">
-            <p class="fw-bold" id="pr-result-text"></p>
-            <p class="text-muted small">
-              Siz aytdingiz: <span id="pr-spoken" class="fst-italic"></span>
-            </p>
-          </div>
-        </div>
-
-        <!-- Writing bosqichi -->
-        <div id="stepWriting" class="d-none">
-          <p class="text-muted small mb-2">Inglizcha tarjimasini yozing</p>
-          <h2 class="fw-bold mb-4" id="wr-translation"></h2>
-          <input type="text"
-                 id="wr-input"
-                 class="form-control form-control-lg text-center mb-3"
-                 placeholder="Inglizcha so'z..."
-                 autocomplete="off"
-                 autocorrect="off"
-                 autocapitalize="off"
-                 spellcheck="false"
-                 style="border-radius: 14px">
-          <div id="wr-hint-section">
-            <button onclick="showWritingHint()" class="btn btn-outline-secondary btn-sm">
-              <i class="bi bi-lightbulb"></i> Yordam
-            </button>
-            <p class="text-muted small mt-2" id="wr-hint"></p>
-          </div>
-          <div id="wr-result" class="d-none mt-2">
-            <p class="fw-bold" id="wr-result-text"></p>
-            <p class="text-muted small" id="wr-correct-answer"></p>
-          </div>
-        </div>
-
       </div>
 
-      <!-- Asosiy tugma -->
-      <button id="mainBtn"
-              class="btn btn-primary w-100 py-3 fw-bold"
-              style="border-radius: 14px;
-                     font-size: 1.1rem"
-              onclick="handleMainBtn()">
-        Davom etish <i class="bi bi-arrow-right"></i>
-      </button>
+      <div class="text-center">
+        <button id="mainBtn"
+                class="btn btn-primary px-4 py-2 fw-semibold"
+                style="border-radius: 999px;"
+                onclick="handleMainBtn()">
+          Reveal meaning
+        </button>
+      </div>
 
-      <!-- Yakuniy natija -->
       <div id="finalResult" class="d-none text-center">
         <div class="card border-0 shadow-sm p-5">
           <i class="bi bi-trophy-fill text-warning" style="font-size: 4rem;"></i>
-          <h3 class="fw-bold mt-3">Bajarildi! 🎉</h3>
-          <p class="text-muted">Barcha {{ words|length }} ta so'zni o'rgandingiz!</p>
+          <h3 class="fw-bold mt-3">Finished!</h3>
+          <p class="text-muted">You have reviewed all {{ words|length }} words.</p>
           <div class="d-flex gap-3 mt-3">
             <button onclick="restartLearn()" class="btn btn-primary w-100 py-2 fw-bold">
-              <i class="bi bi-arrow-repeat"></i> Qayta
+              <i class="bi bi-arrow-repeat"></i> Again
             </button>
             <a href="{{ url_for('vocab.detail_set', set_id=vocab_set.id) }}"
                class="btn btn-outline-secondary w-100 py-2 fw-bold">
-              <i class="bi bi-arrow-left"></i> Orqaga
+              <i class="bi bi-arrow-left"></i> Back
             </a>
           </div>
         </div>

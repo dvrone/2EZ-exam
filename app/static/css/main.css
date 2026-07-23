@@ -317,6 +317,109 @@ pre {
 }
 
 /* ========================
+   Vocabulary learning intro
+======================== */
+.learn-header {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4a90d9;
+}
+
+.learn-subtitle {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.learn-intro-card {
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 28px;
+  background: linear-gradient(145deg, #ffffff 0%, #f5f9ff 100%);
+  border: 1px solid rgba(74, 144, 217, 0.12);
+  box-shadow: 0 20px 45px rgba(74, 144, 217, 0.08);
+}
+
+.learn-intro-card:hover {
+  transform: none;
+}
+
+.learn-intro-label {
+  margin-bottom: 0.75rem;
+  color: #4a90d9;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.learn-word {
+  font-size: clamp(2.4rem, 4.5vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.learn-meta {
+  color: #4a90d9;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.learn-actions {
+  margin-bottom: 1.25rem;
+}
+
+.learn-pronounce-btn {
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+}
+
+.learn-translation {
+  margin-top: 0.75rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.learn-example {
+  margin-top: 0.4rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.learn-hint {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+[data-bs-theme="dark"] .learn-header {
+  color: #7dd3fc;
+}
+
+[data-bs-theme="dark"] .learn-subtitle,
+[data-bs-theme="dark"] .learn-example,
+[data-bs-theme="dark"] .learn-hint {
+  color: #9fb3bf;
+}
+
+[data-bs-theme="dark"] .learn-intro-card {
+  background: linear-gradient(145deg, #1a2f38 0%, #162a33 100%);
+  border-color: rgba(125, 211, 252, 0.16);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+}
+
+[data-bs-theme="dark"] .learn-word {
+  color: #f9fafb;
+}
+
+/* ========================
    Utilities
 ======================== */
 .min-width-0 {
